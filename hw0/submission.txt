@@ -1,0 +1,11 @@
+1. James Marcus Hughes, but I prefer to be called Marcus
+
+2. PhD in Computer Science with a focus on machine learning algorithms for online anomaly detection and space weather prediction
+
+3. Ubuntu 18.04 LTS (with KDE); Intel Core i5-6440HQ; 16GB of RAM; Mesa DRI Intel HD Graphics 530 (Skylake GT2)
+
+4. I completed my undergrad in computer science and astronomy at Williams College. While there, I didn't get the pleasure of taking Morgan McGuire's computer graphics course before he left for sabbatical. During his data structures course, we discussed ray tracing a little bit. But, my background in computer graphics is solely linked to small visualizations made for research/work, often just by making a ton of still frames and stacking them together with ffmpeg. 
+
+5. I'm interested in scientific visualization applications.
+
+6. I don't have any detailed ideas yet. I'd be interesting in model visualization. I work at NOAA part time on solar image segmentation. There are some models that might be interesting to visualize. I'll ask around and think some more. 
