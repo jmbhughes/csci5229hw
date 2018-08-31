@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     *  Integrate 50,000 steps (50 time units with dt = 0.001)
     *  Explicit Euler integration
     */
-   for (i=0;i<50000;i++)
+   for (i=0;i<50;i++)
    {
       double dx = s*(y-x);
       double dy = x*(r-z)-y;
