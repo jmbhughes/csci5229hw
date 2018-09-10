@@ -1,0 +1,35 @@
+Name: James Marcus Hughes
+1)
+   At first, I got the following framerates:
+             1x1 = 60fps
+             300x300 = 60fps
+             fullscreen = 60fps
+   I then did some investigating about my computer and settings. My graphics settings are:
+             Graphics:  Card: Intel HD Graphics 530
+             Display Server: x11 (X.Org 1.19.6 ) drivers: modesetting (unloaded: fbdev,vesa)
+             Resolution: 1920x1080@59.93hz
+             OpenGL: renderer: Mesa DRI Intel HD Graphics 530 (Skylake GT2) version: 4.5 Mesa 18.0.5
+   I discovered that with my drivers on Kubuntu, there is an option called vblank_mode that I can set.
+   According to FreeDesktop (https://dri.freedesktop.org/wiki/ConfigurationOptions/), the configuration options are:
+             0 = Never wait, run as high framerate as possible!
+             1 = Application preference, default interval 0 
+             2 = Application preference, default interval 1 
+             3 = Application preference, always synchronize with refresh
+   Thus, I used `export vblank_mode=0` so it wouldn't limit my framerate and got the following results
+   running a full computer load and other code running in the background:
+             1x1 = 1020 fps
+             300x300 = 980 fps
+             fullscreen = 440 fps
+   A smaller window size means there is less to render and display, less pixels to compute values for, so it can render more frames per second. 
+
+2)
+   It's my understanding that this vertical refresh option limits the calculations because my monitor can only display
+   60 frames per second. So, I imagine the other numbers are just different refresh rates for monitors. Having such a high framerate
+   can result in vertical tearing because some parts of the screen are updated more rapidly than others. One reason some people
+   may actually want to compute more frames than they can display is while playing high speed games; it avoids input lag because
+   the most recent frame is relevant to the most recent mouse click. I've never been (and probably never will be) at this level
+   of competition. This vertical swap interval is a setting that restricts such that buffer swaps must occur after some number
+   of vertical blanks from the previouis swap, the number could be system or application dependent. 
+
+3) less than an hour
+

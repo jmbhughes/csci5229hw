@@ -1,11 +1,15 @@
 #include "CSCIx229.h"
 #include <stdio.h>
-
-enum MODE{sMode, bMode, rMode};
-enum SIGN{negative, zero, positive};
+#include <math.h>
 
 //-------------------------------------------------
-// GLOBALS
+// GLOBAL DEFINES
+#define PI 3.14159265
+//-------------------------------------------------
+
+
+//-------------------------------------------------
+// GLOBAL PARAMETERS
 // Lorenz Parameters 
 double s  = 10.0;
 double b  = 2.6666;
@@ -24,8 +28,8 @@ int iterations = 500000;
 int th = 0;       // Azimuth of view angle
 int ph = 0;       // Elevation of view angle
 int viewStep = 5;
-int currentMode = rMode;
 //-------------------------------------------------
+
 
 /*
  *  Convenience routine to output raster text
@@ -46,6 +50,55 @@ void Print(const char* format , ...) {
       glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,*ch++);
 }
 
+void drawGround(){ 
+    glBegin(GL_TRIANGLE_FAN);
+    glVertex3f(-1.0, 0.0, -1.0);
+    glVertex3f(1.0, 0.0, -1.0);
+    glVertex3f(1.0, 0.0, 1.0);
+    glVertex3f(-1.0, 0.0, 1.0);
+    glEnd();
+}
+
+void drawAnnulus(float innerRadius, float outerRadius){
+    int numSections = 100;
+    float thetaStep = 2 * PI / numSections;
+    glBegin(GL_TRIANGLE_STRIP);
+    glVertex2f(outerRadius * cos(0), outerRadius * sin(0));
+    for (int i = 0; i < numSections; i++) {
+        glVertex2f(innerRadius * cos(i * thetaStep), innerRadius * sin(i * thetaStep));
+        glVertex2f(outerRadius * cos((i+1) * thetaStep), outerRadius * sin((i+1) * thetaStep));
+    }
+    glVertex2f(innerRadius * cos(numSections * thetaStep), innerRadius * sin(numSections * thetaStep));
+    glEnd();
+}
+
+void drawCircle(float radius) {
+    int numSections = 100;
+    float thetaStep = 2 * PI / numSections;
+    glBegin(GL_TRIANGLE_FAN);
+    glVertex2f(0, 0);
+    for (int i = 0; i <= numSections; i++) {
+        glVertex2f(radius * cos(i * thetaStep), radius * sin(i * thetaStep));
+    }
+    
+    glEnd();
+}
+
+void drawCylinder(float radius, float height) {
+    drawCircle(radius);
+    
+    int numSections = 100;
+    float thetaStep = 2 * PI / numSections;
+    glBegin(GL_QUAD_STRIP);
+    for (int i = 0; i <= numSections; i++) {
+        glVertex3f(radius * cos(i * thetaStep), radius * sin(i * thetaStep), 0);
+        glVertex3f(radius * cos(i * thetaStep), radius * sin(i * thetaStep), height);
+    }
+    glEnd();
+    glTranslatef(0, 0, height);
+    drawCircle(radius);
+}
+
 /*
  *  Function to print any errors encountered
  *  copied from Schreuder's example 5
@@ -55,47 +108,46 @@ void ErrCheck(const char* where) {
    if (err) fprintf(stderr,"ERROR: %s [%s]\n",gluErrorString(err),where);
 }
 
-/*
- * Calcuates the location of the point after the next Lorenz iteration
- */
-void stepLorenz() {
-    // Determine how much change there is
-    double dx = s*(y-x);
-    double dy = x*(r-z)-y;
-    double dz = x*y - b*z;
 
-    // Update the parameters
-    x += dt*dx;
-    y += dt*dy;
-    z += dt*dz;
-}
+double TREE_FACTOR = 1.0;
+double TREE_LINE_BASE_LEN = 0.1;
 
-/*
- *  Draws a Lorenz curve from (1,1,1) with the global parameters specified 
- */
-void drawLorenzCurve() {
-    //  Set the initial point to (1, 1, 1)
-    x = 1.0;
-    y = 1.0;
-    z = 1.0;
+void drawTree(int currentDepth, int maxDepth)
+{
+    if (currentDepth > maxDepth)
+        return;
 
-    //  Draw connected line strips, the count defined by the global parameter iterations
-    //  Color will vary with the fraction drawn so far, starting blue and going red
-    glBegin(GL_LINE_STRIP);
-    for (int i = 0; i < iterations; i++) {
-        // Determine the current color by the fraction drawn so far
-        float fractionDrawn = (float) i / (float) iterations;
-        glColor3f(1.0 * fractionDrawn, 0.0, 1.0 * (1 - fractionDrawn));
-
-        // add the point and increment the lorenz attractor for the next point
-        glVertex3f(scale*x, scale*y, scale*z);
-        stepLorenz();
+    if (currentDepth <= maxDepth - 2)
+    {
+        glColor3d(0.45, 0.2, 0.05);
+        glLineWidth(10 * pow(TREE_FACTOR, currentDepth));
     }
+    else
+    {
+        glColor3d(0, 0.5, 0);
+        glLineWidth(30 * pow(TREE_FACTOR, currentDepth));
+    }
+
+    double lineLen = TREE_LINE_BASE_LEN * pow(TREE_FACTOR, currentDepth);
+    glBegin(GL_LINES);
+    glVertex2d(0, 0);
+    glVertex2d(0, lineLen);
     glEnd();
+
+    int angle1 = 10 + rand() % 40;
+    int angle2 = 10 + rand() % 40;
+
+    glTranslated(0, lineLen, 0);
+    glRotated(-angle1, 0, 0, 1);
+    drawTree(currentDepth + 1, maxDepth);
+    glRotated(angle1 + angle2, 0, 0, 1);
+    drawTree(currentDepth + 1, maxDepth);
+    glRotated(-angle2, 0, 0, 1);
+    glTranslated(0, -lineLen, 0);
 }
 
 /*
- * Function is called by GLUT to display a scene
+ * function is called by GLUT to display a scene
  */
 void display() {
    // Clear screen
@@ -108,14 +160,11 @@ void display() {
    glRotated(ph,1,0,0);
    glRotated(th,0,1,0);
  
-   // Draw path
-   drawLorenzCurve();
-
-   // Print parameter settings at bottom left of screen
-   glColor3f(1.0, 1.0, 1.0);
-   glWindowPos2i(5,5);
-   Print("s=%5.2f, b=%5.2f, r=%5.2f", s, b, r);
-
+   //drawGround();
+   //drawAnnulus(0.5, 0.75);
+   // drawCircle(0.5);
+   //drawCylinder(0.5, 0.5);
+   drawTree(0, 10);
    // Update the display
    glFlush();
    glutSwapBuffers();
@@ -130,112 +179,65 @@ void reshape(int width,int height) {
    double w2h = (height>0) ? (double)width/height : 1;
    //  Set viewport as entire window
    glViewport(0,0, width,height);
-
    //  Select projection matrix
    glMatrixMode(GL_PROJECTION);
-
    //  Set projection to identity
    glLoadIdentity();
-
    //  Orthogonal projection:  unit cube adjusted for aspect ratio
    glOrtho(-w2h,+w2h, -1.0,+1.0, -1.0,+1.0);
-
    //  Select model view matrix
    glMatrixMode(GL_MODELVIEW);
-
    //  Set model view to identity
    glLoadIdentity();
 }
 
 /*
  *  GLUT calls this routine when an arrow key is pressed
- *  mappings are:
- *      RIGHT : rotates azimuth by +viewStep
- *      LEFT  : rotates azimuth by -viewstep
- *      UP    : rotates elevation by +viewStep
- *      DOWN  : rotates elevation by -viewStep
  *  copied from Schreuder's example 6
  */
 void special(int key, int x, int y) {
-   //  Right arrow key - increase azimuth by viewStep
+   //  Right arrow key - increase azimuth by 5 degrees
    if (key == GLUT_KEY_RIGHT)
       th += viewStep;
-   //  Left arrow key - decrease azimuth by viewStep
+   //  Left arrow key - decrease azimuth by 5 degrees
    else if (key == GLUT_KEY_LEFT)
       th -= viewStep;
-   //  Up arrow key - increase elevation by viewStep
+   //  Up arrow key - increase elevation by 5 degrees
    else if (key == GLUT_KEY_UP)
       ph += viewStep;
-   //  Down arrow key - decrease elevation by viewStep
+   //  Down arrow key - decrease elevation by 5 degrees
    else if (key == GLUT_KEY_DOWN)
       ph -= viewStep;
-
    //  Keep angles to +/-360 degrees
    th %= 360;
    ph %= 360;
-
    //  Tell GLUT it is necessary to redisplay the scene
    glutPostRedisplay();
 }
 
-
-void updateParameter(signed char sign) {    
-    switch (currentMode) {
-    case rMode:
-        r += sign * 1;
-        break;
-    case sMode:
-        s += sign * 0.1;
-        break;
-    case bMode:
-        b += sign * 0.1;
-        break;
-    default:
-        printf("Not implemented");
-    }
-}
-
-/*
- *  GLUT uses this on a regular key input
- *  mappings are:
- *      + : increases r by 1
- *      - : decreases r by 1
- */
 void key(unsigned char ch, int x, int y) {
-    switch (ch) {
-    case 'r':
-        currentMode = rMode;
-        break;
-    case 'b':
-        currentMode = bMode;
-        break;
-    case 's':
-        currentMode = sMode;
-    case '+':
-        updateParameter(1);
-        break;
-    case '-':
-        updateParameter(-1);
-        break;        
-    default:
-        printf("Key not bound\n");
+    if (ch == '+') {
+        r += 1;
+    } else if (ch == '-') {
+        r -= 1;
     }
     glutPostRedisplay();
 }
 
+void idle() {
+    ph += 1;
+    th += 1;
+    glutPostRedisplay();
+}
 
-/*
- *  Main method for execution
- */
 int main(int argc, char *argv[]) {
     
    //  Initialize GLUT and process user parameters
    glutInit(&argc,argv);
-
-   // Initialize the display mode
+ 
    glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
    
-   //  Request 900 x 900 pixel window
+   //  Request 500 x 500 pixel window
    glutInitWindowSize(900, 900);
    
    //  Create the window
@@ -251,7 +253,10 @@ int main(int argc, char *argv[]) {
    glutSpecialFunc(special);
    
    //  Tell GLUT to call "key" when a key is pressed
-   glutKeyboardFunc(key);
+   // glutKeyboardFunc(key);
+   
+   //  Tell GLUT to call "idle" when nothing else is going on
+   // glutIdleFunc(idle);
 
    //  Pass control to GLUT so it can interact with the user
    ErrCheck("init");
