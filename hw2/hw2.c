@@ -1,8 +1,22 @@
-#include "CSCIx229.h"
-#include <stdio.h>
+/*
+ * hw2: Lorenz System
+ * 
+ * James Marcus Hughes
+ *
+ * Display Lorenz Attractor with modifiable parameters and views. 
+ *
+ * Key bindings:
+ *   s/S     decrease/increase the s paramater
+ *   r/R     decrease/increase the r parameter
+ *   b/B     decrease/increase the b parameter
+ *   arrows  change view angle
+ *   0       reset view angle
+ *   ESC     exit
+ */
 
-enum MODE{sMode, bMode, rMode};
-enum SIGN{negative, zero, positive};
+#include "CSCIx229.h"
+#include <stdbool.h>
+#include <stdio.h>
 
 //-------------------------------------------------
 // GLOBALS
@@ -11,26 +25,25 @@ double s  = 10.0;
 double b  = 2.6666;
 double r  = 30.0;
 
-double x = 1.0;
-double y = 1.0;
-double z = 1.0;
+double x = 1.0; // current x position
+double y = 1.0; // current y position
+double z = 1.0; // current z position
 
-double dt = 0.001;
-double scale = 0.01;
-double offset = 1.0;
-int iterations = 500000;
+double dt = 0.001; // how rapidly parameters should change by, the step size
+double scale = 0.01; // decreases attractor to show in field
+int iterations = 500000; // how many steps to evaluate to show attractor
 
 // Viewing
 int th = 0;       // Azimuth of view angle
 int ph = 0;       // Elevation of view angle
-int viewStep = 5;
-int currentMode = rMode;
+bool showAxes = true; // whether to print axes
+int viewStep = 5; // how many degrees the arrows will change view by
 //-------------------------------------------------
 
 /*
  *  Convenience routine to output raster text
  *  Use VARARGS to make this more flexible
- * taken from Schreduer example 5
+ *  taken from Schreduer example 5
  */
 #define LEN 8192  // Maximum length of text string
 void Print(const char* format , ...) {
@@ -56,10 +69,10 @@ void ErrCheck(const char* where) {
 }
 
 /*
- * Calcuates the location of the point after the next Lorenz iteration
+ *  Calcuates the location of the point after the next Lorenz iteration
  */
 void stepLorenz() {
-    // Determine how much change there is
+    // Determine how much change is in system
     double dx = s*(y-x);
     double dy = x*(r-z)-y;
     double dz = x*y - b*z;
@@ -95,6 +108,28 @@ void drawLorenzCurve() {
 }
 
 /*
+ *  Draws the axes in white 
+ */
+void drawAxes() {
+    glColor3f(1,1,1);
+    glBegin(GL_LINES);
+    glVertex3d(0,0,0);
+    glVertex3d(1,0,0);
+    glVertex3d(0,0,0);
+    glVertex3d(0,1,0);
+    glVertex3d(0,0,0);
+    glVertex3d(0,0,1);
+    glEnd();
+    //  Label axes
+    glRasterPos3d(1,0,0);
+    Print("X");
+    glRasterPos3d(0,1,0);
+    Print("Y");
+    glRasterPos3d(0,0,1);
+    Print("Z");
+}
+
+/*
  * Function is called by GLUT to display a scene
  */
 void display() {
@@ -111,6 +146,10 @@ void display() {
    // Draw path
    drawLorenzCurve();
 
+   // Draw axes if requested
+   if (showAxes)
+       drawAxes();
+   
    // Print parameter settings at bottom left of screen
    glColor3f(1.0, 1.0, 1.0);
    glWindowPos2i(5,5);
@@ -179,47 +218,52 @@ void special(int key, int x, int y) {
 }
 
 
-void updateParameter(signed char sign) {    
-    switch (currentMode) {
-    case rMode:
-        r += sign * 1;
-        break;
-    case sMode:
-        s += sign * 0.1;
-        break;
-    case bMode:
-        b += sign * 0.1;
-        break;
-    default:
-        printf("Not implemented");
-    }
-}
-
 /*
  *  GLUT uses this on a regular key input
- *  mappings are:
- *      + : increases r by 1
- *      - : decreases r by 1
+ *  key bindings are:
+ *      s/S     decrease/increase the s paramater
+ *      r/R     decrease/increase the r parameter
+ *      b/B     decrease/increase the b parameter
+ *      arrows  change view angle
+ *      0       reset view angle
+ *      a       toggle axes on and off
+ *      ESC     exit
  */
 void key(unsigned char ch, int x, int y) {
     switch (ch) {
+    case 27: // escape key
+        exit(0);
+        break;
     case 'r':
-        currentMode = rMode;
+        r -= 1;
+        break;
+    case 'R':
+        r += 1;
         break;
     case 'b':
-        currentMode = bMode;
+        b -= 0.1;
+        break;
+    case 'B':
+        b += 0.1;
         break;
     case 's':
-        currentMode = sMode;
-    case '+':
-        updateParameter(1);
+        s -= 0.1;
         break;
-    case '-':
-        updateParameter(-1);
-        break;        
+    case 'S':
+        s += 0.1;
+        break;
+    case 'a':
+        showAxes = !showAxes;
+        break;
+    case '0':
+        ph = 0;
+        th = 0;
+        break;
     default:
-        printf("Key not bound\n");
+        printf("Key not bound. See README.\n");
     }
+
+    // ask to update 
     glutPostRedisplay();
 }
 
@@ -256,6 +300,7 @@ int main(int argc, char *argv[]) {
    //  Pass control to GLUT so it can interact with the user
    ErrCheck("init");
 
+   // Start running!
    glutMainLoop();
    return 0;
 }

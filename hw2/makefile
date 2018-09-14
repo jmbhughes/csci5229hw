@@ -1,3 +1,9 @@
+# Example 6
+EXE=hw2
+
+# Main target
+all: $(EXE)
+
 #  MinGW
 ifeq "$(OS)" "Windows_NT"
 CFLG=-O3 -Wall
@@ -14,12 +20,18 @@ CFLG=-O3 -Wall
 LIBS=-lglut -lGLU -lGL -lm
 endif
 #  OSX/Linux/Unix/Solaris
-CLEAN=rm -f hw2 *.o *.a
+CLEAN=rm -f $(EXE) *.o *.a
 endif
 
-#  Compile and link
-hw2:hw2.c
-	gcc $(CFLG) -o $@ $^ $(LIBS)
+# Compile rules
+.c.o:
+	gcc -c $(CFLG) $<
+.cpp.o:
+	g++ -c $(CFLG) $<
+
+#  Link
+hw2:hw2.o
+	gcc -O3 -o $@ $^   $(LIBS)
 
 #  Clean
 clean:

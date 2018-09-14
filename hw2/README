@@ -1,0 +1,16 @@
+hw2: Lorenz System
+
+James Marcus Hughes
+CSCI5229 Fall 2018
+
+Display Lorenz Attractor with modifiable parameters and views. 
+
+Key bindings:
+    s/S     decrease/increase the s paramater
+    r/R     decrease/increase the r parameter
+    b/B     decrease/increase the b parameter
+    arrows  change view angle
+    0       reset view angle
+    a       toggle axes on and off
+    ESC     exit
+    
