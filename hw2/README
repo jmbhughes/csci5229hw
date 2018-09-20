@@ -3,7 +3,8 @@ hw2: Lorenz System
 James Marcus Hughes
 CSCI5229 Fall 2018
 
-Display Lorenz Attractor with modifiable parameters and views. 
+Display Lorenz Attractor with modifiable parameters and views. The color of the curve transitions from
+red to blue as the iteration number increases. 
 
 Key bindings:
     s/S     decrease/increase the s paramater
@@ -13,4 +14,10 @@ Key bindings:
     0       reset view angle
     a       toggle axes on and off
     ESC     exit
-    
+
+
+NOTES:
+The Lorenz Attractor is quite interesting, initially discovered by Lorenz while describing weather systems.
+( I took a course in chaos theory where we discussed it.) As such, I restricted my variables to postive range
+only to mimic the natural system. When r < 0, the curve goes towards the origin instead of to a different point.
+For bigger R, the path is much more interesting and oscillates between points. 

@@ -11,6 +11,7 @@
  *   b/B     decrease/increase the b parameter
  *   arrows  change view angle
  *   0       reset view angle
+ *   a       toggle axes on and off
  *   ESC     exit
  */
 
@@ -22,15 +23,15 @@
 // GLOBALS
 // Lorenz Parameters 
 double s  = 10.0;
-double b  = 2.6666;
-double r  = 30.0;
+double b  = 8.0/3.0;
+double r  = 28.0;
 
 double x = 1.0; // current x position
 double y = 1.0; // current y position
 double z = 1.0; // current z position
 
 double dt = 0.001; // how rapidly parameters should change by, the step size
-double scale = 0.01; // decreases attractor to show in field
+double scale = 0.05; // decreases attractor to show in field
 int iterations = 500000; // how many steps to evaluate to show attractor
 
 // Viewing
@@ -86,18 +87,19 @@ void stepLorenz() {
 /*
  *  Draws a Lorenz curve from (1,1,1) with the global parameters specified 
  */
-void drawLorenzCurve() {
+void drawLorenzCurve(float xstart, float ystart, float zstart) {
     //  Set the initial point to (1, 1, 1)
-    x = 1.0;
-    y = 1.0;
-    z = 1.0;
+    x = xstart; //1.0;
+    y = ystart; //1.0;
+    z = zstart; //1.0;
 
     //  Draw connected line strips, the count defined by the global parameter iterations
     //  Color will vary with the fraction drawn so far, starting blue and going red
     glBegin(GL_LINE_STRIP);
     for (int i = 0; i < iterations; i++) {
         // Determine the current color by the fraction drawn so far
-        float fractionDrawn = (float) i / (float) iterations;
+        double fractionDrawn = (double) i / (double) iterations;
+        //printf("%lf\n", log(fractionDrawn));
         glColor3f(1.0 * fractionDrawn, 0.0, 1.0 * (1 - fractionDrawn));
 
         // add the point and increment the lorenz attractor for the next point
@@ -144,7 +146,7 @@ void display() {
    glRotated(th,0,1,0);
  
    // Draw path
-   drawLorenzCurve();
+   drawLorenzCurve(1.0, 1.0, 1.0);
 
    // Draw axes if requested
    if (showAxes)
@@ -154,17 +156,20 @@ void display() {
    glColor3f(1.0, 1.0, 1.0);
    glWindowPos2i(5,5);
    Print("s=%5.2f, b=%5.2f, r=%5.2f", s, b, r);
-
+       
    // Update the display
    glFlush();
    glutSwapBuffers();
 }
+
 
 /*
  *  This function is called by GLUT when the window is resized
  *  copied from Schreuder's example 5
  */
 void reshape(int width,int height) {
+    double dim = 3.0;
+    
    //  Calculate width to height ratio
    double w2h = (height>0) ? (double)width/height : 1;
    //  Set viewport as entire window
@@ -177,7 +182,7 @@ void reshape(int width,int height) {
    glLoadIdentity();
 
    //  Orthogonal projection:  unit cube adjusted for aspect ratio
-   glOrtho(-w2h,+w2h, -1.0,+1.0, -1.0,+1.0);
+   glOrtho(-w2h*dim,+w2h*dim, -dim,+dim, -dim,+dim);
 
    //  Select model view matrix
    glMatrixMode(GL_MODELVIEW);
@@ -217,7 +222,6 @@ void special(int key, int x, int y) {
    glutPostRedisplay();
 }
 
-
 /*
  *  GLUT uses this on a regular key input
  *  key bindings are:
@@ -235,19 +239,22 @@ void key(unsigned char ch, int x, int y) {
         exit(0);
         break;
     case 'r':
-        r -= 1;
+        if (r - 0.1 > 0)
+            r -= 0.1;
         break;
     case 'R':
-        r += 1;
+        r += 0.1;
         break;
     case 'b':
-        b -= 0.1;
+        if (b - 0.1 > 0) 
+            b -= 0.1;
         break;
     case 'B':
         b += 0.1;
         break;
     case 's':
-        s -= 0.1;
+        if (s - 0.1 > 0)
+            s -= 0.1;
         break;
     case 'S':
         s += 0.1;
