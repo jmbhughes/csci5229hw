@@ -6,18 +6,10 @@
 #include "Vector3D.h"
 #include <stdexcept>
 
-// Create a zero vector
 Vector3D::Vector3D(): x(0.0), y(0.0), z(0.0) {}
 
-// Create a customized vector (x,y,z)
 Vector3D::Vector3D(double x, double y, double z): x(x), y(y), z(z) {}
 
-/*
- * Get the i'th component:
- * i=0: x
- * i=1: y
- * i=2: z
- */
 double Vector3D::get(int i) {
     if (i==0)
         return x;
@@ -26,5 +18,5 @@ double Vector3D::get(int i) {
     else if (i==2)
         return z;
     else
-        throw std::out_of_range("Too many faces specified in RectangularPrism draw.");
+        throw std::out_of_range("Only three coordinates in Vector3D, cannot 'get' beyond.");
 }
