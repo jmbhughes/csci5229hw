@@ -152,6 +152,7 @@ void display() {
    glLoadIdentity();
 
    // Set view angle
+//      glRotated(th,0,1,0);
    glRotated(ph,1,0,0);
    glRotated(th,0,1,0);
  

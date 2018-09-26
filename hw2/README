@@ -3,6 +3,8 @@ hw2: Lorenz System
 James Marcus Hughes
 CSCI5229 Fall 2018
 
+To build: just make
+
 Display Lorenz Attractor with modifiable parameters and views. The color of the curve transitions from
 red to blue as the iteration number increases. 
 
@@ -15,6 +17,8 @@ Key bindings:
     a       toggle axes on and off
     ESC     exit
 
+I spent approximately 3 hours on this project. I'm not sure of the precise time because the time overlaps
+my time on HW1 and HW3. I'll keep my tracking separate from now on. 
 
 NOTES:
 The Lorenz Attractor is quite interesting, initially discovered by Lorenz while describing weather systems.

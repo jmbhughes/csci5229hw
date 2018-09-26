@@ -17,19 +17,11 @@
 #include <GL/glut.h>
 #endif
 
-#define Cos(th) cos(3.1415926/180*(th))
-#define Sin(th) sin(3.1415926/180*(th))
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void Print(const char* format , ...);
-void Fatal(const char* format , ...);
-unsigned int LoadTexBMP(const char* file);
-void Project(double fov,double asp,double dim);
-void ErrCheck(const char* where);
-int  LoadOBJ(const char* file);
+void error_check(const char* where);
 
 #ifdef __cplusplus
 }
