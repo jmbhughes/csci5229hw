@@ -1,3 +1,5 @@
+// Borrowed from Schreuder.
+
 #ifndef CSCIx229
 #define CSCIx229
 
