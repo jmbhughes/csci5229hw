@@ -67,13 +67,14 @@ void FerrisWheelChair::draw() {
     // draw top smooth surface of the seat
     for (int i = 0; i < num_sections; i++) {
         glColor3d((i + 0.0)/num_sections, 0, 1.0 - (i + 0.0)/num_sections);
+        glColor3d(sin(i), cos(i), sin(i) * cos(i));
         glVertex3d(x_curr, -0.3 * log10(x_curr) + 0.4 * x_curr - 0.25, 0);
         glVertex3d(x_curr, -0.3 * log10(x_curr) + 0.4 * x_curr - 0.25, width);
         x_curr = i * x_step + x_start;
     }
 
     // connect top surface of the seat to chair
-    glColor3d(1, 1, 1);
+    glColor3d(0.02, 0.32, 0.07);
     glVertex3d(x_curr, 0, 0);
     glVertex3d(x_curr, 0, width);
     glVertex3d(0, 0, 0);

@@ -35,7 +35,7 @@ void Ring::draw() {
                 0.0);
 
         // top face
-        glColor3d(0.0, 1.0, 0.0);
+        glColor3d(1.0, 1.0, 0.0);
         glVertex3d((radius + thickness) * cos(angle),
                 (radius + thickness) * sin(angle),
                 thickness);
@@ -44,7 +44,7 @@ void Ring::draw() {
                 thickness);
 
         // back face
-        glColor3d(0.0, 0.0, 1.0);
+        glColor3d(1.0, 0.0, 1.0);
         glVertex3d(radius * cos(angle),
                    radius * sin(angle),
                    thickness);
@@ -53,7 +53,7 @@ void Ring::draw() {
                    thickness);
 
         // bottom face
-        glColor3d(1.0, 1.0, 1.0);
+        glColor3d(0.0, 1.0, 1.0);
         glVertex3d(radius * cos(angle),
                    radius * sin(angle),
                    0.0);

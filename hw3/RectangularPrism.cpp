@@ -5,12 +5,12 @@
 RectangularPrism::RectangularPrism(double x, double y, double z,
         double width, double length, double height):
     x(x), y(y), z(z), width(width), length(length), height(height), angle_az(0.0), angle_alt(0.0),
-    face_colors{ 1.0, 0.0, 1.0, // magenta bottom
-                 1.0, 0.0, 0.0, // red front
-                 0.0, 1.0, 0.0, // green right
-                 0.0, 0.0, 1.0, // blue back
-                 1.0, 1.0, 0.0, // yellow left
-                 0.0, 1.0, 1.0} // cyan top
+    face_colors{ 0.02, 0.32, 0.07,
+                 0.12, 0.42, 0.17,
+                 0.02, 0.32, 0.07,
+                 0.12, 0.42, 0.17,
+                 0.59, 0.37, 0.58,
+                 1.0, 0.0, 0.0} // cyan top
                  {}
 
 RectangularPrism::RectangularPrism(double x, double y, double z,
@@ -18,12 +18,12 @@ RectangularPrism::RectangularPrism(double x, double y, double z,
         double angle_az, double angle_alt):
         x(x), y(y), z(z), width(width), length(length), height(height),
         angle_az(angle_az), angle_alt(angle_alt),
-        face_colors{ 1.0, 0.0, 1.0, // magenta bottom
-                     1.0, 0.0, 0.0, // red front
-                     0.0, 1.0, 0.0, // green right
-                     0.0, 0.0, 1.0, // blue back
-                     1.0, 1.0, 0.0, // yellow left
-                     0.0, 1.0, 1.0} // cyan top
+        face_colors{  0.02, 0.32, 0.07,
+                      0.12, 0.42, 0.17,
+                      0.02, 0.32, 0.07,
+                      0.12, 0.42, 0.17,
+                      0.59, 0.37, 0.58,
+                      1.0, 0.0, 0.0} // cyan top
                      {}
 
 RectangularPrism::RectangularPrism(double x, double y, double z,

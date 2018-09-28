@@ -11,7 +11,7 @@ surface is a smooth logarithm for optimal comfort! You can see this in the singl
 Finally, I made a couple mugs. These are water tight objects that can have water poured into them. 
 
 ## Build Instructions
-Build simply using cmake. 
+Build simply using make. (I've used cmake, but you should be able to call make.) 
 
 ## Run Instructions
 To run, just execute the `hw3` executable with no parameters. 
