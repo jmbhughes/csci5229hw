@@ -21,4 +21,6 @@ To interact with the world, rotate your view using the arrow keys.
 To exit, click `escape`.
 
 ## Approximate time
-
+4 hours and 40 minutes. A good chunk of time was spent learning how to transfer to C++, 
+and then I dabbled with creating a Lindenmeyer system drawer (see the scratch directory) which 
+was ultimately abandoned for now. 
