@@ -1,0 +1,3 @@
+/home/marcus/grive/2018fall/graphics/hw/hw3/CMakeFiles/rebuild_cache.dir
+/home/marcus/grive/2018fall/graphics/hw/hw3/CMakeFiles/hw3.dir
+/home/marcus/grive/2018fall/graphics/hw/hw3/CMakeFiles/edit_cache.dir
