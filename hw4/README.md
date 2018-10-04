@@ -10,7 +10,7 @@ view them in several interesting ways:
 3. Perspective first person navigation
 
 My viewing for 1 and 2 are linked, i.e. adjusting the view in one and switching to the other will be reflected. 
-However, 3 is an independent viewer since their height is fixed.  
+However, 3 is an independent viewer since their height is fixed .  
 
 ## Build Instructions
 Use `make` to build.
