@@ -1,15 +1,34 @@
 #include <stdio.h>
 #include <math.h>
-#include "CSCIx229.h"
+#include "CSCIx229.h" // TODO: remove this dependency
 #include <iostream>
 #include "FerrisWheel.h"
+#include <stdarg.h>
 #include "Mug.h"
 #include "Ring.h"
+
+//  Macro for sin & cos in degrees
+#define Cos(th) cos(3.1415926/180*(th))
+#define Sin(th) sin(3.1415926/180*(th))
 
 // GLOBALS
 // Viewing
 int th = 0;       // Azimuth of view angle
 int ph = 0;       // Elevation of view angle
+int mode = 1;     // projection mode, 1 = overhead ortho, 2 = overhead perspective, 3 = first person
+int fov=55;       //  Field of view (for perspective)
+double asp=1;     //  Aspect ratio
+double dim=1.5;   //  Size of world
+
+// eye location
+double Ex = 0;
+double Ey = 0;
+double Ez = 4.5;
+// facing direction
+double view_angle = 180;
+double dx = Sin(view_angle);
+double dy = 0;
+double dz = Cos(view_angle);
 
 /*
  *  Print any errors encountered
@@ -21,6 +40,47 @@ void error_check(const char* where) {
 }
 
 /*
+ *  Convenience routine to output raster text
+ *  Use VARARGS to make this more flexible
+ */
+#define LEN 8192  //  Maximum length of text string
+void print(const char* format , ...)  {
+    char    buf[LEN];
+    char*   ch=buf;
+    va_list args;
+    //  Turn the parameters into a character string
+    va_start(args,format);
+    vsnprintf(buf,LEN,format,args);
+    va_end(args);
+    //  Display the characters one at a time at the current raster position
+    while (*ch)
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18,*ch++);
+}
+
+/*
+ *  Set projection
+ *  modified from Schreuder's example 9
+ */
+void project() {
+    //  Tell OpenGL we want to manipulate the projection matrix
+    glMatrixMode(GL_PROJECTION);
+    //  Undo previous transformations
+    glLoadIdentity();
+    //  Perspective transformation
+    if (mode == 1) {
+        glOrtho(-asp*dim,+asp*dim, -dim,+dim, -dim,+dim);
+    } else if (mode == 2){
+        gluPerspective(fov, asp, dim / 4, 4 * dim);
+    } else if (mode == 3) {
+        gluPerspective(fov, asp, dim / 4, 4 * dim);
+    }
+    //  Switch to manipulating the model matrix
+    glMatrixMode(GL_MODELVIEW);
+    //  Undo previous transformations
+    glLoadIdentity();
+}
+
+/*
  * function is called by GLUT to display a scene
  */
 void display() {
@@ -29,11 +89,26 @@ void display() {
     glEnable(GL_DEPTH_TEST);
     // Reset previous transforms
     glLoadIdentity();
+     if (mode == 1) { //  Orthogonal - overhead
+        glRotatef(ph,1,0,0);
+        glRotatef(th,0,1,0);
+      } else if (mode == 2) { // Perspective - overhead
+         double x = 3.5 * Sin(ph) * Cos(th);
+         double y = 3.5 * Sin(ph) * Sin(th);
+         double z = 3.5 * Cos(ph);
+         gluLookAt(0, 0, 3.5,
+                   0, 0, -1,
+                   0, 1, 0);
+         glRotatef(ph,1,0,0);
+         glRotatef(th,0,1,0);
+      } else if (mode == 3) { // Persepctive - first person
+        // update eye position
+         gluLookAt(Ex, Ey, Ez,
+                   Ex + dx, Ey + dy, Ez + dz,
+                   0, 1, 0);
+      }
 
-    // Set view angle
-    glRotated(ph,1,0,0);
-    glRotated(th,0,1,0);
-
+    // Draw the scene
     // draw a big ferris wheel
     auto obj = new FerrisWheel(0.0, 0.0, 0.0, 0.8, 0.2);
     obj->draw();
@@ -61,6 +136,10 @@ void display() {
     Ring r = Ring(0.1, -0.3, 0.3, 0.2, 0.1);
     r.draw();
 
+    // Print state information
+    glWindowPos2i(5, 5);
+    glColor3d(1, 1, 1);
+    print("Angle=%d,%d  Dim=%.1f FOV=%d Projection=%s",th,ph,dim,fov,mode?"Perpective":"Orthogonal");
     // Update the display
     glFlush();
     glutSwapBuffers();
@@ -83,6 +162,9 @@ void reshape(int width,int height) {
     glOrtho(-w2h,+w2h, -1.0,+1.0, -1.0,+1.0);
     // Select model view matrix
     glMatrixMode(GL_MODELVIEW);
+
+    project(); // update projection
+
     // Set model view to identity
     glLoadIdentity();
 }
@@ -95,31 +177,78 @@ void reshape(int width,int height) {
 void key(unsigned char ch, int x, int y) {
     if (ch == 27)
         exit(0);
+    else if (ch == '1') // set to orthogonal view
+        mode = 1;
+    else if (ch == '2') // set to persepctive "overhead" view
+        mode = 2;
+    else if (ch == '3') // set to first person view
+        mode = 3;
+    project(); // reproject
+    glutPostRedisplay();
+}
+
+void change_overhead_view(int key) {
+    const int view_step = 5;
+    switch(key) {
+        case GLUT_KEY_RIGHT:
+            th += view_step;
+            break;
+        case GLUT_KEY_LEFT:
+            th -= view_step;
+            break;
+        case GLUT_KEY_UP:
+            ph += view_step;
+            break;
+        case GLUT_KEY_DOWN:
+            ph -= view_step;
+            break;
+    }
+    th %= 360;
+    ph %= 360;
+}
+
+void change_firstperson_view(int key) {
+    const int view_step = 1;
+    const double tstep = 0.1;
+    switch(key) {
+        case GLUT_KEY_RIGHT:
+            view_angle += view_step;
+            dx = Sin(view_angle);
+            dy = 0;
+            dz = Cos(view_angle);
+            break;
+        case GLUT_KEY_LEFT:
+            view_angle -= view_step;
+            dx = Sin(view_angle);
+            dy = 0;
+            dz = Cos(view_angle);
+            break;
+        case GLUT_KEY_UP:
+            Ex += tstep * dx;
+            Ey += tstep * dy;
+            Ez += tstep * dz;
+            break;
+        case GLUT_KEY_DOWN:
+            Ex -= tstep * dx;
+            Ey -= tstep * dy;
+            Ez -= tstep * dz;
+            break;
+    }
 }
 /*
  *  GLUT calls this routine when an arrow key is pressed
  *  copied from Schreuder's example 6
  */
 void special(int key, int x, int y) {
-    const int view_step = 5;
-    // Right arrow key - increase azimuth by 5 degrees
-    if (key == GLUT_KEY_RIGHT)
-        th += view_step;
-        // Left arrow key - decrease azimuth by 5 degrees
-    else if (key == GLUT_KEY_LEFT)
-        th -= view_step;
-        // Up arrow key - increase elevation by 5 degrees
-    else if (key == GLUT_KEY_UP)
-        ph += view_step;
-        // Down arrow key - decrease elevation by 5 degrees
-    else if (key == GLUT_KEY_DOWN)
-        ph -= view_step;
-    //  Keep angles to +/-360 degrees
-    th %= 360;
-    ph %= 360;
+    if (mode == 1 || mode == 2)
+        change_overhead_view(key);
+    else
+        change_firstperson_view(key);
+    project(); // update projection
     // Tell GLUT it is necessary to redisplay the scene
     glutPostRedisplay();
 }
+
 /*
  * Main executable method
  */
@@ -134,7 +263,7 @@ int main(int argc, char *argv[]) {
     glutInitWindowSize(900, 900);
 
     // Create the window
-    glutCreateWindow("HW 3: James Marcus Hughes");
+    glutCreateWindow("HW 4: James Marcus Hughes");
 
     // Tell GLUT to call "display" when the scene should be drawn
     glutDisplayFunc(display);

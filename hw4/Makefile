@@ -1,5 +1,5 @@
 # Example 6
-EXE=hw4-
+EXE=hw4
 
 # Main target
 all: $(EXE)
