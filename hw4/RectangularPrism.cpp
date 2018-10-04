@@ -1,5 +1,5 @@
 #include "RectangularPrism.h"
-#include "CSCIx229.h"
+#include "Definitions.h"
 #include <stdexcept>
 
 RectangularPrism::RectangularPrism(double x, double y, double z,

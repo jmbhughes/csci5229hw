@@ -5,7 +5,7 @@
 #include "Cylinder.h"
 #include "Circle.h"
 #include <cmath>
-#include "CSCIx229.h"
+#include "Definitions.h"
 
 Cylinder::Cylinder(double radius, double height) :
     cx(0), cy(0), cz(0), radius(radius), height(height), angle_alt(0.0), angle_az(0.0),

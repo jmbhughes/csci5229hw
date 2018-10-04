@@ -4,7 +4,7 @@
 
 #include "Circle.h"
 #include <math.h>
-#include "CSCIx229.h"
+#include "Definitions.h"
 #include <iostream>
 
 Circle::Circle(double radius):

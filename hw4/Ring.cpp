@@ -3,7 +3,7 @@
 //
 
 #include "Ring.h"
-#include "CSCIx229.h"
+#include "Definitions.h"
 #include <cmath>
 
 Ring::Ring(double cx, double cy, double cz, double radius, double thickness):

@@ -1,26 +1,36 @@
-# HW3: James Marcus hughes
+# HW4: James Marcus hughes
 
 ## Description
-In this homework, I made a three-dimensional scene consisting 
-of a couple mugs, a couple ferris wheels, and a ferris wheel seat. The ferris wheel is built of a couple
-three-dimensional rings as the support structure. A ring is a hula-hoop object. This support is connected
-to a central hub cylinder by some support structs, which are rectangular prisms. Finally, there are chairs
-in each ferris wheel. A chair **is not simply a combination of rectangular prisms** because the seat
-surface is a smooth logarithm for optimal comfort! You can see this in the single chair blown up. 
+In this homework, I built upon my three-dimensional scene consisting 
+of a couple mugs, a couple ferris wheels, and a ferris wheel seat. We now have the ability to 
+view them in several interesting ways:
 
-Finally, I made a couple mugs. These are water tight objects that can have water poured into them. 
+1. Orthogonal overhead
+2. Perspective overhead
+3. Perspective first person navigation
+
+My viewing for 1 and 2 are linked, i.e. adjusting the view in one and switching to the other will be reflected. 
+However, 3 is an independent viewer since their height is fixed.  
 
 ## Build Instructions
-Just use make.
+Use `make` to build.
 
 ## Run Instructions
-To run, just execute the `hw3` executable with no parameters. 
+Run `hw4` executable with no parameters. 
 
 ### Keybindings
 To interact with the world, rotate your view using the arrow keys. 
 To exit, click `escape`.
+- `1` : switches to orthogonal overhead view
+- `2` : switches to perspective overhead view
+- `3` : switches to perspective first person view
+- `esc` : closes the program
+- `arrow keys`: in the overhead views, the arrow keys rotate the world so that the world moves
+beneath you: left/right adjust azimuth while up/down adjust altitude; in the first person view,
+the arrow keys allow you to move through the world, the forward/back keys allow you to walk forward 
+or backwards while left/right adjusts where you're pointing (in azimuth). 
+Your camera cannot tilt up and down and stays at a fixed height.
 
 ## Approximate time
-4 hours and 40 minutes. A good chunk of time was spent learning how to transfer to C++, 
-and then I dabbled with creating a Lindenmeyer system drawer (see the scratch directory) which 
-was ultimately abandoned for now. 
+I spent three hours on this homework, some was updating the scene while the rest was adding the new 
+viewing geometries. 

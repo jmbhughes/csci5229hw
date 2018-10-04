@@ -1,15 +1,12 @@
 #include <stdio.h>
 #include <math.h>
-#include "CSCIx229.h" // TODO: remove this dependency
+#include "Definitions.h"
 #include <iostream>
 #include "FerrisWheel.h"
 #include <stdarg.h>
 #include "Mug.h"
 #include "Ring.h"
 
-//  Macro for sin & cos in degrees
-#define Cos(th) cos(3.1415926/180*(th))
-#define Sin(th) sin(3.1415926/180*(th))
 
 // GLOBALS
 // Viewing
@@ -89,13 +86,12 @@ void display() {
     glEnable(GL_DEPTH_TEST);
     // Reset previous transforms
     glLoadIdentity();
+
+    // update the current view
      if (mode == 1) { //  Orthogonal - overhead
         glRotatef(ph,1,0,0);
         glRotatef(th,0,1,0);
       } else if (mode == 2) { // Perspective - overhead
-         double x = 3.5 * Sin(ph) * Cos(th);
-         double y = 3.5 * Sin(ph) * Sin(th);
-         double z = 3.5 * Cos(ph);
          gluLookAt(0, 0, 3.5,
                    0, 0, -1,
                    0, 1, 0);
@@ -181,25 +177,28 @@ void key(unsigned char ch, int x, int y) {
         mode = 1;
     else if (ch == '2') // set to persepctive "overhead" view
         mode = 2;
-    else if (ch == '3') // set to first person view
+    else if (ch == '3') // set to persepctive first person view
         mode = 3;
     project(); // reproject
     glutPostRedisplay();
 }
 
+/*
+ * Given an input key, update the viewer in an overhead setting
+ */
 void change_overhead_view(int key) {
     const int view_step = 5;
     switch(key) {
-        case GLUT_KEY_RIGHT:
+        case GLUT_KEY_RIGHT: // roatate azimuth
             th += view_step;
             break;
-        case GLUT_KEY_LEFT:
+        case GLUT_KEY_LEFT: // rotate azimuth
             th -= view_step;
             break;
-        case GLUT_KEY_UP:
+        case GLUT_KEY_UP: // rotate altitude
             ph += view_step;
             break;
-        case GLUT_KEY_DOWN:
+        case GLUT_KEY_DOWN: // rotate altitude
             ph -= view_step;
             break;
     }
@@ -207,28 +206,31 @@ void change_overhead_view(int key) {
     ph %= 360;
 }
 
+/*
+ * Given an input key, update the viewer in the first person setting
+ */
 void change_firstperson_view(int key) {
-    const int view_step = 1;
-    const double tstep = 0.1;
+    const int view_step = 1; // how much to rotate view by
+    const double tstep = 0.1; // how quickly to step
     switch(key) {
-        case GLUT_KEY_RIGHT:
+        case GLUT_KEY_RIGHT: // rotate the view
             view_angle += view_step;
             dx = Sin(view_angle);
             dy = 0;
             dz = Cos(view_angle);
             break;
-        case GLUT_KEY_LEFT:
+        case GLUT_KEY_LEFT: // rotate the view
             view_angle -= view_step;
             dx = Sin(view_angle);
             dy = 0;
             dz = Cos(view_angle);
             break;
-        case GLUT_KEY_UP:
+        case GLUT_KEY_UP: // move forward
             Ex += tstep * dx;
             Ey += tstep * dy;
             Ez += tstep * dz;
             break;
-        case GLUT_KEY_DOWN:
+        case GLUT_KEY_DOWN: // move backward
             Ex -= tstep * dx;
             Ey -= tstep * dy;
             Ez -= tstep * dz;
@@ -240,11 +242,12 @@ void change_firstperson_view(int key) {
  *  copied from Schreuder's example 6
  */
 void special(int key, int x, int y) {
-    if (mode == 1 || mode == 2)
+    if (mode == 1 || mode == 2) // if in an overhead mode
         change_overhead_view(key);
-    else
+    else // mode == 3,  in a first person mode
         change_firstperson_view(key);
     project(); // update projection
+
     // Tell GLUT it is necessary to redisplay the scene
     glutPostRedisplay();
 }
@@ -276,9 +279,6 @@ int main(int argc, char *argv[]) {
 
     // Tell GLUT to call "key" when a key is pressed
     glutKeyboardFunc(key);
-
-    // Tell GLUT to call "idle" when nothing else is going on
-    // glutIdleFunc(idle);
 
     // Pass control to GLUT so it can interact with the user
     error_check("init");

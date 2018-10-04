@@ -1,4 +1,4 @@
-#include "CSCIx229.h"
+#include "Definitions.h"
 #include "FerrisWheel.h"
 #include "Ring.h"
 #include "Cylinder.h"

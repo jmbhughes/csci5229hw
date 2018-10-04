@@ -1,7 +1,5 @@
-// Borrowed from Schreuder.
-
-#ifndef CSCIx229
-#define CSCIx229
+#ifndef Definitions
+#define Definitions
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,6 +22,11 @@ extern "C" {
 #endif
 
 void error_check(const char* where);
+
+//  Macro for sin & cos in degrees
+#define Cos(th) cos(3.1415926/180*(th))
+#define Sin(th) sin(3.1415926/180*(th))
+
 
 #ifdef __cplusplus
 }

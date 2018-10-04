@@ -1,5 +1,5 @@
 #include "Mug.h"
-#include "CSCIx229.h"
+#include "Definitions.h"
 
 Mug::Mug(double cx, double cy, double cz, double height, double radius,
         double rx, double ry, double rz): cx(cx), cy(cy), cz(cz), height(height),
