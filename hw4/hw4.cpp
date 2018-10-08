@@ -124,13 +124,13 @@ void display() {
     Mug m2 = Mug(-0.75, -0.1, 0.45, 0.5, 0.1, 100, 30, 90);
     m2.draw();
 
+    // draw a smaller rotated mug
+    Mug m3 = Mug(-0.15, -0.1, 0.45, 0.5, 0.1, 100, 40, 130);
+    m3.draw();
+
     // draw a ferris wheel chair
     FerrisWheelChair c = FerrisWheelChair(0, 0, 0.5, 0.34, 0, 0, 0.7);
     c.draw();
-
-    // draw an example ring
-    Ring r = Ring(0.1, -0.3, 0.3, 0.2, 0.1);
-    r.draw();
 
     // Print state information
     glWindowPos2i(5, 5);
@@ -147,17 +147,9 @@ void display() {
  */
 void reshape(int width,int height) {
     // Calculate width to height ratio
-    double w2h = (height>0) ? (double)width/height : 1;
+    asp = (height>0) ? (double)width/height : 1;
     // Set viewport as entire window
     glViewport(0,0, width,height);
-    // Select projection matrix
-    glMatrixMode(GL_PROJECTION);
-    // Set projection to identity
-    glLoadIdentity();
-    // Orthogonal projection:  unit cube adjusted for aspect ratio
-    glOrtho(-w2h,+w2h, -1.0,+1.0, -1.0,+1.0);
-    // Select model view matrix
-    glMatrixMode(GL_MODELVIEW);
 
     project(); // update projection
 
@@ -256,6 +248,7 @@ void special(int key, int x, int y) {
  * Main executable method
  */
 int main(int argc, char *argv[]) {
+
     //  Initialize GLUT and process user parameters
     glutInit(&argc,argv);
 
