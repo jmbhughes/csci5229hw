@@ -6,6 +6,20 @@ Mug::Mug(double cx, double cy, double cz, double height, double radius,
         double rx, double ry, double rz): cx(cx), cy(cy), cz(cz), height(height),
         radius(radius), rx(rx), ry(ry), rz(rz) {}
 
+Mug::Mug(double cx, double cy, double cz, double height, double radius,
+         double rx, double ry, double rz,
+         double base_color[3], double side_color[3], double inside_color[3],
+         double top_color[3], double handle_color[3]): cx(cx), cy(cy), cz(cz), height(height),
+                                           radius(radius), rx(rx), ry(ry), rz(rz) {
+    for (int i = 0; i < 3; i++) {
+        this->base_color[i] = base_color[i];
+        this->side_color[i] = side_color[i];
+        this->inside_color[i] = inside_color[i];
+        this->top_color[i] = top_color[i];
+        this->handle_color[i] = handle_color[i];
+    }
+}
+
 void Mug::draw() {
     // convert so bottom center of mug is at origin
     glPushMatrix();
@@ -18,10 +32,6 @@ void Mug::draw() {
    const int num_sections = 100;
 
     // draw base
-    double base_color[3] = {0.1,0.1,0.8};
-    double side_color[3] = {0.03,0.16,0.40};
-    double inside_color[3] = {0.1, 0.1, 0.1};
-    double top_color[3] = {0, 1, 1};
     Cylinder c = Cylinder(0, 0, 0, 1, 0.1, 0, 0, base_color, base_color, side_color);
     c.draw();
 
@@ -80,7 +90,7 @@ void Mug::draw() {
     glEnd();
 
     // draw handle in four parts
-    glColor3d(1,0,0);
+    glColor3dv(handle_color);
     glBegin(GL_QUAD_STRIP);
     for (int i = 0; i <= num_sections; i++) {
         glNormal3d(-1, 0, 0);
@@ -94,7 +104,6 @@ void Mug::draw() {
     }
     glEnd();
 
-    glColor3d(0,1,0);
     glBegin(GL_QUAD_STRIP);
     for (int i = 0; i <= num_sections; i++) {
         glNormal3d(1, 0, 0);
@@ -108,7 +117,6 @@ void Mug::draw() {
     }
     glEnd();
 
-    glColor3d(0,0,1);
     glBegin(GL_QUAD_STRIP);
     for (int i = 0; i <= num_sections; i++) {
         glNormal3d(0,
@@ -126,7 +134,6 @@ void Mug::draw() {
     }
     glEnd();
 
-    glColor3d(1,1,1);
     glBegin(GL_QUAD_STRIP);
     for (int i = 0; i <= num_sections; i++) {
         glNormal3d(0,

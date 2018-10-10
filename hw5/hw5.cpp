@@ -158,7 +158,13 @@ void display() {
 
     // Draw the scene
     // draw a mug
-    Mug m = Mug(0, 0, 0, 2.0, 1.0, 0, 90, 90);
+    double base_color[3] = {0.25,0.25,0.25};
+    double side_color[3] = {0.3,0.16,0.40};
+    double inside_color[3] = {0.3, 0.3, 0.4};
+    double top_color[3] = {1, 1, 0};
+    double handle_color[3] = {1, 1, 0};
+    Mug m = Mug(0, 0, 0, 2.0, 1.0, 0, 90, 90,
+            base_color, side_color, inside_color, top_color, handle_color);
     m.draw();
 
     // draw a cylinder
