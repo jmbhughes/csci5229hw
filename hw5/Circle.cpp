@@ -39,11 +39,13 @@ void Circle::draw() {
     glBegin(GL_TRIANGLE_FAN);
     glColor3dv(color);
     // draw center
+    glNormal3d(0, 0, 1);
     glVertex2f(0,0);
 
     // establish circle perimeter points
     for (int section = 0; section <= num_sections; ++section) {
         glColor3d(color[0], color[1], color[2]);
+        glNormal3d(0, 0, 1);
         glVertex2d(radius * cos(section * angle_step), radius * sin(section * angle_step));
     }
     glEnd();

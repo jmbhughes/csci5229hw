@@ -40,16 +40,18 @@ void Cylinder::draw() {
     glRotated(angle_az,1,0,0);
 
     // draw the bottom circle
-    Circle bottom = Circle(0.0, 0.0, -half_height, radius, 0.0, 0.0, bottom_color);
+    Circle bottom = Circle(0.0, 0.0, -half_height, radius, 0.0, 180.0, bottom_color);
     bottom.draw();
 
     // draw the columns by rectangles connecting top and bottom
-    int numSections = 100;
+    int numSections = 300;
     double thetaStep = 2 * M_PI / numSections;
     glColor3dv(column_color);
     glBegin(GL_QUAD_STRIP);
     for (int i = 0; i <= numSections; i++) {
+        glNormal3d(radius * cos(i * thetaStep), radius * sin(i * thetaStep), 0);
         glVertex3d(radius * cos(i * thetaStep), radius * sin(i * thetaStep), -half_height);
+        glNormal3d(radius * cos(i * thetaStep), radius * sin(i * thetaStep), 0);
         glVertex3d(radius * cos(i * thetaStep), radius * sin(i * thetaStep), half_height);
     }
     glEnd();

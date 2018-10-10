@@ -10,7 +10,7 @@ private:
     double cx, cy, cz, height, radius, rx, ry, rz;
 public:
     // create a mug where the center of the bottom is at (cx, cy, cz) with a cup height and a circle of specified radius
-    // rotate the cube by (rx, ry, rz) in degrees
+    // rotate the mug by (rx, ry, rz) in degrees
     Mug(double cx, double cy, double cz, double height, double radius, double rx, double ry, double rz);
 
     // draw a mug

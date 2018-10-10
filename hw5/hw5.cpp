@@ -6,7 +6,8 @@
 #include <stdarg.h>
 #include "Mug.h"
 #include "Ring.h"
-
+#include "Ball.h"
+#include "Cylinder.h"
 
 // GLOBALS
 // Viewing
@@ -15,17 +16,34 @@ int ph = 0;       // Elevation of view angle
 int mode = 1;     // projection mode, 1 = overhead ortho, 2 = overhead perspective, 3 = first person
 int fov=55;       //  Field of view (for perspective)
 double asp=1;     //  Aspect ratio
-double dim=1.5;   //  Size of world
+double dim=5.0;   //  Size of world
 
 // eye location
 double Ex = 0;
 double Ey = 0;
 double Ez = 4.5;
+
 // facing direction
 double view_angle = 180;
 double dx = Sin(view_angle);
 double dy = 0;
 double dz = Cos(view_angle);
+
+
+// Light values
+int one       =   1;  // Unit value
+int distance  =   5;  // Light distance
+int smooth    =   1;  // Smooth/Flat shading
+int local     =   0;  // Local Viewer Model
+int emission  =   0;  // Emission intensity (%)
+int ambient   =  30;  // Ambient intensity (%)
+int diffuse   = 100;  // Diffuse intensity (%)
+int specular  =   0;  // Specular intensity (%)
+int shininess =   0;  // Shininess (power of two)
+float shiny   =   1;  // Shininess (value)
+int zh        =  90;  // Light azimuth
+float ylight  =   0;  // Elevation of light
+int move      =   1;  // boolean of light movement
 
 /*
  *  Print any errors encountered
@@ -77,6 +95,7 @@ void project() {
     glLoadIdentity();
 }
 
+
 /*
  * function is called by GLUT to display a scene
  */
@@ -104,38 +123,50 @@ void display() {
                    0, 1, 0);
       }
 
+    //  Translate intensity to color vectors
+    float Ambient[]   = {0.01*ambient ,0.01*ambient ,0.01*ambient ,1.0};
+    float Diffuse[]   = {0.01*diffuse ,0.01*diffuse ,0.01*diffuse ,1.0};
+    float Specular[]  = {0.01*specular,0.01*specular,0.01*specular,1.0};
+
+    //  Light position
+    float Position[]  = {distance*Cos(zh),ylight,distance*Sin(zh),1.0};
+    //  Draw light position as ball (still no lighting here)
+    glColor3f(1,1,1);
+    Ball b = Ball(Position[0],Position[1],Position[2] , 0.1);
+    b.draw(emission, shiny);
+    //  OpenGL should normalize normal vectors
+    glEnable(GL_NORMALIZE);
+
+    //  Enable lighting
+    glEnable(GL_LIGHTING);
+
+    //  Location of viewer for specular calculations
+    glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER,local);
+
+    //  glColor sets ambient and diffuse color materials
+    glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
+    glEnable(GL_COLOR_MATERIAL);
+
+    //  Enable light 0
+    glEnable(GL_LIGHT0);
+
+    //  Set ambient, diffuse, specular components and position of light 0
+    glLightfv(GL_LIGHT0,GL_AMBIENT ,Ambient);
+    glLightfv(GL_LIGHT0,GL_DIFFUSE ,Diffuse);
+    glLightfv(GL_LIGHT0,GL_SPECULAR,Specular);
+    glLightfv(GL_LIGHT0,GL_POSITION,Position);
+
     // Draw the scene
-    // draw a big ferris wheel
-    auto obj = new FerrisWheel(0.0, 0.0, 0.0, 0.8, 0.2);
-    obj->draw();
-
-    // draw a smaller ferris wheel
-    glPushMatrix();
-    glScaled(0.4, 0.4, 0.4);
-    obj = new FerrisWheel(0.8, 0.8, 0.8, 0.8, 0.2);
-    obj->draw();
-    glPopMatrix();
-
     // draw a mug
-    Mug m = Mug(-0.45, 0.45, -0.45, 0.3, 0.2, 280, 30, 90);
+    Mug m = Mug(0, 0, 0, 2.0, 1.0, 0, 90, 90);
     m.draw();
 
-    // draw a smaller rotated mug
-    Mug m2 = Mug(-0.75, -0.1, 0.45, 0.5, 0.1, 100, 30, 90);
-    m2.draw();
+    // draw a cylinder
+//    double base_color[3] = {0.1,0.1,0.8};
+//    double side_color[3] = {0.03,0.16,0.40};
+//    Cylinder c = Cylinder(0, 0, 0, 1, 0.1, 0, 0, base_color, base_color, side_color);
+//    c.draw();
 
-    // draw a smaller rotated mug
-    Mug m3 = Mug(-0.15, -0.1, 0.45, 0.5, 0.1, 100, 40, 130);
-    m3.draw();
-
-    // draw a ferris wheel chair
-    FerrisWheelChair c = FerrisWheelChair(0, 0, 0.5, 0.34, 0, 0, 0.7);
-    c.draw();
-
-    // Print state information
-    glWindowPos2i(5, 5);
-    glColor3d(1, 1, 1);
-    print("Angle=%d,%d  Dim=%.1f FOV=%d Projection=%s",th,ph,dim,fov,mode?"Perpective":"Orthogonal");
     // Update the display
     glFlush();
     glutSwapBuffers();
@@ -157,21 +188,64 @@ void reshape(int width,int height) {
     glLoadIdentity();
 }
 
+/*
+ *  GLUT calls this routine when idle
+ */
+void idle()
+{
+    //  Elapsed time in seconds
+    double t = glutGet(GLUT_ELAPSED_TIME)/1000.0;
+    zh = fmod(90*t,360.0);
+    //  Tell GLUT it is necessary to redisplay the scene
+    glutPostRedisplay();
+}
 
 /*
  * GLUT calls this routine when a regular key is clicked.
  * keybindings: escape key exits
  */
 void key(unsigned char ch, int x, int y) {
-    if (ch == 27)
-        exit(0);
-    else if (ch == '1') // set to orthogonal view
-        mode = 1;
-    else if (ch == '2') // set to persepctive "overhead" view
-        mode = 2;
-    else if (ch == '3') // set to persepctive first person view
-        mode = 3;
+    // exit upon hitting escape
+    switch (ch) {
+        // escape on hitting exit
+        case 27:
+            exit(0);
+            break;
+        // change view modes
+        case '1': // orthogonal view
+            mode = 1;
+            break;
+        case '2': // perspective overhead view
+            mode = 2;
+            break;
+        case '3': // perspective first person view
+            mode = 3;
+            break;
+        // change the light elevation
+        case '[':
+            ylight -= 0.1;
+            break;
+        case ']':
+            ylight += 0.1;
+            break;
+        // change the light location
+        case '<':
+            zh += 1;
+            break;
+        case '>':
+            zh -= 1;
+            break;
+        // toggle the light movement
+        case 'm':
+            move = 1 - move;
+            break;
+
+        default:
+            std::cout << ch << std::endl;
+            break;
+    }
     project(); // reproject
+    glutIdleFunc(move?idle:NULL);
     glutPostRedisplay();
 }
 
@@ -234,10 +308,25 @@ void change_firstperson_view(int key) {
  *  copied from Schreuder's example 6
  */
 void special(int key, int x, int y) {
-    if (mode == 1 || mode == 2) // if in an overhead mode
-        change_overhead_view(key);
-    else // mode == 3,  in a first person mode
-        change_firstperson_view(key);
+    switch(key) {
+        case GLUT_KEY_RIGHT:
+        case GLUT_KEY_DOWN:
+        case GLUT_KEY_LEFT:
+        case GLUT_KEY_UP:
+            if (mode == 1 || mode == 2) { // if in an overhead view
+                change_overhead_view(key);
+            } else { // in a first person view
+                change_firstperson_view(key);
+            }
+            break;
+        case GLUT_KEY_PAGE_DOWN:
+            if (dim > 1)
+                dim -= 0.1;
+            break;
+        case GLUT_KEY_PAGE_UP:
+            dim += 0.1;
+            break;
+    }
     project(); // update projection
 
     // Tell GLUT it is necessary to redisplay the scene
@@ -248,7 +337,6 @@ void special(int key, int x, int y) {
  * Main executable method
  */
 int main(int argc, char *argv[]) {
-
     //  Initialize GLUT and process user parameters
     glutInit(&argc,argv);
 
@@ -259,7 +347,7 @@ int main(int argc, char *argv[]) {
     glutInitWindowSize(900, 900);
 
     // Create the window
-    glutCreateWindow("HW 4: James Marcus Hughes");
+    glutCreateWindow("HW 5: James Marcus Hughes");
 
     // Tell GLUT to call "display" when the scene should be drawn
     glutDisplayFunc(display);
@@ -272,6 +360,9 @@ int main(int argc, char *argv[]) {
 
     // Tell GLUT to call "key" when a key is pressed
     glutKeyboardFunc(key);
+
+    // Tell GLUT  to call "idle" when no interaction
+    glutIdleFunc(idle);
 
     // Pass control to GLUT so it can interact with the user
     error_check("init");
