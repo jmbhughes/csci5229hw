@@ -2,12 +2,13 @@
 #include <math.h>
 #include "Definitions.h"
 #include <iostream>
-#include "FerrisWheel.h"
 #include <stdarg.h>
 #include "Mug.h"
 #include "Ring.h"
 #include "Ball.h"
 #include "Cylinder.h"
+#include "RectangularPrism.h"
+#include "FerrisWheel.h"
 
 // GLOBALS
 // Viewing
@@ -44,7 +45,7 @@ float shiny   =   1;  // Shininess (value)
 int zh        =  90;  // Light azimuth
 float ylight  =   0;  // Elevation of light
 int move      =   1;  // boolean of light movement
-
+int rotation  =  90;  // ferris wheel rotation
 /*
  *  Print any errors encountered
  *  copied from Schreuder's example 5
@@ -158,21 +159,36 @@ void display() {
 
     // Draw the scene
     // draw a mug
-    double base_color[3] = {0.25,0.25,0.25};
+    /*double base_color[3] = {0.25,0.25,0.25};
     double side_color[3] = {0.3,0.16,0.40};
     double inside_color[3] = {0.3, 0.3, 0.4};
     double top_color[3] = {1, 1, 0};
     double handle_color[3] = {1, 1, 0};
-    Mug m = Mug(0, 0, 0, 2.0, 1.0, 0, 90, 90,
-            base_color, side_color, inside_color, top_color, handle_color);
-    m.draw();
+    Mug m = Mug(0, 0, 0, 2.0, 1.0, 0, 90, 270);
+            //base_color, side_color, inside_color, top_color, handle_color);
+    m.draw();*/
 
     // draw a cylinder
-//    double base_color[3] = {0.1,0.1,0.8};
-//    double side_color[3] = {0.03,0.16,0.40};
-//    Cylinder c = Cylinder(0, 0, 0, 1, 0.1, 0, 0, base_color, base_color, side_color);
-//    c.draw();
+    /*double base_color[3] = {0.1,0.1,0.8};
+    double side_color[3] = {0.03,0.16,0.40};
+    Cylinder c = Cylinder(0, 0, 0, 1, 0.1, 0, 0, base_color, base_color, side_color);
+    c.draw();*/
 
+    // draw a rectangular prism
+
+    //RectangularPrism rp = RectangularPrism(0, 0, 0, 1, 1, 1, 30, 90, 180);
+    //rp.draw();
+
+    // draw a chair
+    //FerrisWheelChair f = FerrisWheelChair(0, 0, 0, 90, 0, 180, 2);
+    //FerrisWheelChair f = FerrisWheelChair(0, 0, 0, 0, 0, 0, 1);
+    //f.draw();
+
+    //FerrisWheel f = FerrisWheel(0, 0, 0, 1);
+    //f.draw(rotation);
+
+    Ring r = Ring(0, 0, 0, 1, 2);
+    r.draw();
     // Update the display
     glFlush();
     glutSwapBuffers();
@@ -202,6 +218,7 @@ void idle()
     //  Elapsed time in seconds
     double t = glutGet(GLUT_ELAPSED_TIME)/1000.0;
     zh = fmod(90*t,360.0);
+    rotation = fmod(20*t, 360.0);
     //  Tell GLUT it is necessary to redisplay the scene
     glutPostRedisplay();
 }

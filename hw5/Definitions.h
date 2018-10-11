@@ -24,9 +24,11 @@ extern "C" {
 void error_check(const char* where);
 
 //  Macro for sin & cos in degrees
-#define Cos(th) cos(3.1415926/180*(th))
-#define Sin(th) sin(3.1415926/180*(th))
+#define Cos(th) cos(M_PI/180*(th))
+#define Sin(th) sin(M_PI/180*(th))
 
+#define ACos(f) acos(f)*180/M_PI
+#define ASin(f) asin(f)*180/M_PI
 
 #ifdef __cplusplus
 }

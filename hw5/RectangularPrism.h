@@ -19,39 +19,43 @@ private:
     double z;
 
     // size
-    double width;
-    double length;
-    double height;
+    double sx;
+    double sy;
+    double sz;
 
     // orientation
-    double angle_az;
-    double angle_alt;
+    double rx;
+    double ry;
+    double rz;
 
     // colors of faces: [bottom, front, right, back, left, top]
     double face_colors[3*6];
 public:
     /*
-     * Draw a rectangular prism at (x,y,z) with dimensions (width, length, height)
+     * Draw a rectangular prism at (x,y,z) with dimensions (sx, sy, sz)
      * with no rotations and default colors:
      * [magenta bottom, red front, green right, blue back, yellow left, cyan top]
      */
-    RectangularPrism(double x, double y, double z, double width, double length, double height);
+    RectangularPrism(double x, double y, double z, double sx, double sy, double sz);
 
     /*
-     * Draw a rectangular prism at (x,y,z) with dimensions (width, length, height)
-     * with rotations of angle_az degrees azimuth and angle_alt degrees altitude and default colors:
+     * Draw a rectangular prism at (x,y,z) with dimensions (sx, sy, sx)
+     * with rotations of (rx, ry, rz)
+     * and default colors:
      * [magenta bottom, red front, green right, blue back, yellow left, cyan top]
      */
-    RectangularPrism(double x, double y, double z, double width, double length, double height,
-            double angle_az, double angle_alt);
+    RectangularPrism(double x, double y, double z,
+            double sx, double sy, double sz,
+            double rx, double ry, double rz);
 
     /*
-     * Draw a rectangular prism at (x,y,z) with dimensions (width, length, height)
-     * with rotations of angle_az degrees azimuth and angle_alt degrees altitude and specified colors:
+     * Draw a rectangular prism at (x,y,z) with dimensions (sx, sy, sz)
+     * with rotations of (rx, ry, rz) degrees and specified colors:
      * [bottom, front, right, back, left, top], each being an rgb number in (0,0,0)-(1,1,1)
      */
-    RectangularPrism(double x, double y, double z, double width, double length, double height,
-            double angle_az, double angle_alt,
+    RectangularPrism(double x, double y, double z,
+            double sx, double sy, double sz,
+            double rx, double ry, double rz,
             double face_colors[3*6]);
 
     // draw the specified rectangular prism

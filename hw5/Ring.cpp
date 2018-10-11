@@ -20,42 +20,99 @@ void Ring::draw() {
         glBegin(GL_QUAD_STRIP);
 
         // front face
-        glColor3d(1.0, 0.0, 0.0);
+        glColor3d(0.047, 0.458, 0.494);
+        glNormal3d(0, 0, -1);
         glVertex3d(radius * cos(angle),
                 radius * sin(angle),
                 0.0);
+        glNormal3d(0, 0, -1);
+
         glVertex3d(radius * cos(angle + angle_step),
                 radius * sin(angle + angle_step),
                 0.0);
+        glNormal3d(0, 0, -1);
+
         glVertex3d((radius + thickness) * cos(angle),
                 (radius + thickness) * sin(angle),
                 0.0);
+        glNormal3d(0, 0, -1);
+
         glVertex3d((radius + thickness) * cos(angle + angle_step),
                 (radius + thickness) * sin(angle + angle_step),
                 0.0);
 
         // top face
-        glColor3d(1.0, 1.0, 0.0);
+        glNormal3d((radius + thickness) * cos(angle),
+                   (radius + thickness) * sin(angle),
+                   0);
+        glVertex3d((radius + thickness) * cos(angle),
+                   (radius + thickness) * sin(angle),
+                   0.0);
+
+        glNormal3d((radius + thickness) * cos(angle + angle_step),
+                   (radius + thickness) * sin(angle + angle_step),
+                   0);
+
+        glVertex3d((radius + thickness) * cos(angle + angle_step),
+                   (radius + thickness) * sin(angle + angle_step),
+                   0.0);
+
+        glNormal3d((radius + thickness) * cos(angle),
+                (radius + thickness) * sin(angle),
+                0);
         glVertex3d((radius + thickness) * cos(angle),
                 (radius + thickness) * sin(angle),
                 thickness);
+        glNormal3d((radius + thickness) * cos(angle + angle_step),
+                (radius + thickness) * sin(angle + angle_step),
+                   0);
+
         glVertex3d((radius + thickness) * cos(angle + angle_step),
                 (radius + thickness) * sin(angle + angle_step),
                 thickness);
 
         // back face
-        glColor3d(1.0, 0.0, 1.0);
+        glNormal3d(0, 0, 1);
+
+        glVertex3d((radius + thickness) * cos(angle),
+                   (radius + thickness) * sin(angle),
+                   thickness);
+        glNormal3d(0, 0, 1);
+
+        glVertex3d((radius + thickness) * cos(angle + angle_step),
+                   (radius + thickness) * sin(angle + angle_step),
+                   thickness);
+
+        glNormal3d(0, 0, 1);
         glVertex3d(radius * cos(angle),
                    radius * sin(angle),
                    thickness);
+        glNormal3d(0, 0, 1);
         glVertex3d(radius * cos(angle + angle_step),
                    radius * sin(angle + angle_step),
                    thickness);
 
         // bottom face
-        glColor3d(0.0, 1.0, 1.0);
+        glNormal3d(-radius * cos(angle),
+                   -radius * sin(angle),
+                   0);        glVertex3d(radius * cos(angle),
+                   radius * sin(angle),
+                   thickness);
+        glNormal3d(-radius * cos(angle + angle_step),
+                   -radius * sin(angle + angle_step),
+                   0.0);
+        glVertex3d(radius * cos(angle + angle_step),
+                   radius * sin(angle + angle_step),
+                   thickness);
+
+        glNormal3d(-radius * cos(angle),
+                   -radius * sin(angle),
+                   0);
         glVertex3d(radius * cos(angle),
                    radius * sin(angle),
+                   0.0);
+        glNormal3d(-radius * cos(angle + angle_step),
+                   -radius * sin(angle + angle_step),
                    0.0);
         glVertex3d(radius * cos(angle + angle_step),
                    radius * sin(angle + angle_step),
