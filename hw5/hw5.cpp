@@ -37,7 +37,7 @@ double dz = Cos(view_angle);
 
 // Light values
 int one       =   1;  // Unit value
-int distance  =   5;  // Light distance
+float distance  =   5;  // Light distance
 int smooth    =   1;  // Smooth/Flat shading
 int local     =   0;  // Local Viewer Model
 int emission  =  10;  // Emission intensity (%)
@@ -314,6 +314,14 @@ void key(unsigned char ch, int x, int y) {
         case 'o':
             scene += 1;
             scene %= SCENE_COUNT;
+            break;
+        case 'd':
+            if (distance > 0.2)
+                distance -= 0.1;
+            break;
+        case 'D':
+            distance += 0.1;
+            break;
     }
     project(); // reproject
     glutIdleFunc(move?idle:NULL);
