@@ -18,6 +18,10 @@ int mode = 1;     // projection mode, 1 = overhead ortho, 2 = overhead perspecti
 int fov=55;       //  Field of view (for perspective)
 double asp=1;     //  Aspect ratio
 double dim=5.0;   //  Size of world
+int scene = 0;    // which scene is being shown
+const int SCENE_COUNT = 6; // how many scenes there are
+const int NUM_MUGS = 25;
+double mugs[NUM_MUGS][8];
 
 // eye location
 double Ex = 0;
@@ -36,12 +40,12 @@ int one       =   1;  // Unit value
 int distance  =   5;  // Light distance
 int smooth    =   1;  // Smooth/Flat shading
 int local     =   0;  // Local Viewer Model
-int emission  =   0;  // Emission intensity (%)
-int ambient   =  30;  // Ambient intensity (%)
-int diffuse   = 100;  // Diffuse intensity (%)
-int specular  =   0;  // Specular intensity (%)
-int shininess =   0;  // Shininess (power of two)
-float shiny   =   1;  // Shininess (value)
+int emission  =  10;  // Emission intensity (%)
+int ambient   =  50;  // Ambient intensity (%)
+int diffuse   =  50;  // Diffuse intensity (%)
+int specular  =  15;  // Specular intensity (%)
+int shininess =   2;  // Shininess (power of two)
+float shiny   =   4;  // Shininess (value)
 int zh        =  90;  // Light azimuth
 float ylight  =   0;  // Elevation of light
 int move      =   1;  // boolean of light movement
@@ -96,6 +100,58 @@ void project() {
     glLoadIdentity();
 }
 
+
+void draw_scene0() {
+    // draw a chair
+    FerrisWheelChair f = FerrisWheelChair(0, 0, 0, 270, 0, 0, 3);
+    f.draw();
+}
+
+void draw_scene1() {
+    // draw a mug
+    Mug m = Mug(-1, -1, -1,  2.0, 1.0, 110, 120, 270);
+    m.draw();
+}
+
+void draw_scene2() {
+    double base1_color[3] = {0.1,0.1,0.8};
+    double base2_color[3] = {0.8,0.8,0.1};
+    double side_color[3] = {1,0.16,0.40};
+    Cylinder c = Cylinder(0, 0, 0, 1, 3.1, 100, 30, base1_color, base2_color, side_color);
+    c.draw();
+}
+
+void draw_scene3() {
+    FerrisWheel f = FerrisWheel(0, 0, 0, 3);
+    f.draw(rotation);
+}
+
+void draw_scene4() {
+    Ring r = Ring(0, 0, 0, 1, 2);
+    r.draw();
+}
+
+void draw_scene5() {
+    FerrisWheel f = FerrisWheel(0, 0, 0, 3);
+    f.draw(rotation);
+    f = FerrisWheel(-1, -2, -2, 2);
+    f.draw(rotation);
+    f = FerrisWheel(-2, -3, -3, 1);
+    f.draw(rotation);
+    for (int i = 0; i < NUM_MUGS; i++) {
+        double cx = mugs[i][0];
+        double cy = mugs[i][1];
+        double cz = mugs[i][2];
+        double h = mugs[i][3];
+        double r = mugs[i][4];
+        double rx = mugs[i][5];
+        double ry = mugs[i][6];
+        double rz = mugs[i][7];
+
+        Mug m = Mug(cx, cy, cz, h, r, rx, ry, rz);
+        m.draw();
+    }
+}
 
 /*
  * function is called by GLUT to display a scene
@@ -158,41 +214,34 @@ void display() {
     glLightfv(GL_LIGHT0,GL_POSITION,Position);
 
     // Draw the scene
-    // draw a mug
-    /*double base_color[3] = {0.25,0.25,0.25};
-    double side_color[3] = {0.3,0.16,0.40};
-    double inside_color[3] = {0.3, 0.3, 0.4};
-    double top_color[3] = {1, 1, 0};
-    double handle_color[3] = {1, 1, 0};
-    Mug m = Mug(0, 0, 0, 2.0, 1.0, 0, 90, 270);
-            //base_color, side_color, inside_color, top_color, handle_color);
-    m.draw();*/
 
-    // draw a cylinder
-    /*double base_color[3] = {0.1,0.1,0.8};
-    double side_color[3] = {0.03,0.16,0.40};
-    Cylinder c = Cylinder(0, 0, 0, 1, 0.1, 0, 0, base_color, base_color, side_color);
-    c.draw();*/
+    switch(scene) {
+        case 0:
+            draw_scene0();
+            break;
+        case 1:
+            draw_scene1();
+            break;
+        case 2:
+            draw_scene2();
+            break;
+        case 3:
+            draw_scene3();
+            break;
+        case 4:
+            draw_scene4();
+            break;
+        case 5:
+            draw_scene5();
+            break;
+    }
 
-    // draw a rectangular prism
-
-    //RectangularPrism rp = RectangularPrism(0, 0, 0, 1, 1, 1, 30, 90, 180);
-    //rp.draw();
-
-    // draw a chair
-    //FerrisWheelChair f = FerrisWheelChair(0, 0, 0, 90, 0, 180, 2);
-    //FerrisWheelChair f = FerrisWheelChair(0, 0, 0, 0, 0, 0, 1);
-    //f.draw();
-
-    //FerrisWheel f = FerrisWheel(0, 0, 0, 1);
-    //f.draw(rotation);
-
-    Ring r = Ring(0, 0, 0, 1, 2);
-    r.draw();
     // Update the display
     glFlush();
     glutSwapBuffers();
 }
+
+
 
 /*
  *  This function is called by GLUT when the window is resized
@@ -262,10 +311,9 @@ void key(unsigned char ch, int x, int y) {
         case 'm':
             move = 1 - move;
             break;
-
-        default:
-            std::cout << ch << std::endl;
-            break;
+        case 'o':
+            scene += 1;
+            scene %= SCENE_COUNT;
     }
     project(); // reproject
     glutIdleFunc(move?idle:NULL);
@@ -356,10 +404,29 @@ void special(int key, int x, int y) {
     glutPostRedisplay();
 }
 
+double dRand(double dMin, double dMax) {
+    double d = (double)rand() / RAND_MAX;
+    return dMin + d * (dMax - dMin);
+}
 /*
  * Main executable method
  */
 int main(int argc, char *argv[]) {
+    for (int mug = 0; mug < NUM_MUGS; mug++) {
+        // x y and z
+        mugs[mug][0] = dRand(-3, 3);
+        mugs[mug][1] = dRand(-3, 3);
+        mugs[mug][2] = dRand(-3, 3);
+
+        // size
+        mugs[mug][3] = dRand(0, 0.4);
+        mugs[mug][4] = dRand(0, 0.4);
+
+        // orientation
+        mugs[mug][5] = dRand(0, 360);
+        mugs[mug][6] = dRand(0, 360);
+        mugs[mug][7] = dRand(0, 360);
+    }
     //  Initialize GLUT and process user parameters
     glutInit(&argc,argv);
 

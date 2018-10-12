@@ -17,25 +17,83 @@ void FerrisWheel::draw_support() {
 //    RectangularPrism r = RectangularPrism(cx, cy + height, cz,
 //            0.01, height, 0.01, 180, 0.1);
 //    r.draw();
+    double colors[18] = {0.062, 0.152, 0.254,
+                         0.062, 0.152, 0.254,
+                         0.062, 0.152, 0.254,
+                         0.062, 0.152, 0.254,
+                         0.062, 0.152, 0.254,
+                         0.062, 0.152, 0.254};
+    RectangularPrism r = RectangularPrism(-1.5, -1.2, -0.25, 3, 0.5, 0.1, 90, 0, 0, colors);
+    r.draw();
+
+    r = RectangularPrism(-1.5, -1.2, -0.25, 2.0, 0.09, 0.1, 90, 40, 0, colors);
+    r.draw();
+
+    r = RectangularPrism(-1.5, -1.2, 0.15, 2.0, 0.09, 0.1, 90, 40, 0, colors);
+    r.draw();
+
+    glPushMatrix();
+    glRotated(100, 0, 0, 1);
+    r = RectangularPrism(-1.5, -1.2, -0.25, 2.0, 0.08, 0.1, 90, 40, 0, colors);
+    r.draw();
+
+    r = RectangularPrism(-1.5, -1.2, 0.15, 2.0, 0.08, 0.1, 90, 40, 0, colors);
+    r.draw();
+    glPopMatrix();
+
 }
 
 void FerrisWheel::draw_chairs(double phase) {
     glPushMatrix();
     //glRotated(phase, 0, 0, 1);
-    const int num_chairs = 30;
+    const int num_chairs = 20;
     for (int i = 0; i < num_chairs; i++) {
         double fraction = (i + 0.0) / num_chairs;
-        double x = cos(fraction * 2 * M_PI + phase);
-        double y = sin(fraction * 2 * M_PI + phase);
+        double x = cos(fraction * 2 * M_PI + phase*M_PI/180);
+        double y = sin(fraction * 2 * M_PI + phase*M_PI/180);
         FerrisWheelChair chair = FerrisWheelChair(x, y, 0, 90, 180, 90, 0.1);
         chair.draw();
     }
+    // draw rings the chairs attach to
+    glRotated(phase, 0, 0, 1);
+    Ring r = Ring(0.0, 0, 0.1, 0.97, 0.05);
+    r.draw();
+    r = Ring(0.0, 0, -0.15, 0.97, 0.05);
+    r.draw();
+
+    // draw central hub
+    double hub_color[3] = {1, 1, 1};
+    Cylinder c = Cylinder(0, 0, 0, 0.04, 0.4, 0, 0, hub_color, hub_color, hub_color);
+    c.draw();
+
+    // draw connections to central hub
+    double support_colors[3] = {0.376, 0.564, 0.780};
+    const int num_supports = 10;
+    for (int support = 0; support < num_supports; support++) {
+        glPushMatrix();
+        glRotated(360/num_supports * support, 0, 0, 1);
+        c = Cylinder(0, 0, 0, 0.01, 1.99, 82.6, 0, support_colors, support_colors, support_colors);
+        c.draw();
+        glPopMatrix();
+    }
+
     glPopMatrix();
 }
 
 void FerrisWheel::draw(double phase) {
     // put the chairs in!
+    float white[] = {1,1,1,1};
+    float black[] = {0,0,0,1};
+    glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,0);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+
+    glPushMatrix();
+    glTranslated(cx, cy, cz);
+    glScaled(scale, scale, scale);
     draw_chairs(phase);
+    draw_support();
+    glPopMatrix();
 }
 
 FerrisWheelChair::FerrisWheelChair(double cx, double cy, double cz,
@@ -48,34 +106,43 @@ void FerrisWheelChair::draw_supports() {
     const double location = 1.05;
 
     // connection between seat and back
-    glColor3d(0,0,1);
+    double color[3] = {1,1,1};
     for(int i = 0; i <= num_supports; i++) {
         double x = Cos(i*angle_step + 10);
         double y = Sin(i*angle_step + 10);
-        Cylinder c = Cylinder(location*x, location*y, -0.3, 0.01, 0.3);
+        Cylinder c = Cylinder(location*x, location*y, -0.3, 0.01, 0.3, 0 ,0,
+                color, color, color);
         c.draw();
     }
 
     // lock bar
-    Cylinder c = Cylinder(0, 0.05, 0, 0.02, 2.1, 90, 0);
+    double lock_color[3] = {0.109, 0.109, 0.109};
+    Cylinder c = Cylinder(0, 0.05, 0, 0.02, 2.1, 90, 0, lock_color, lock_color, lock_color);
     c.draw();
 }
 
 void FerrisWheelChair::draw_foot_area() {
-    RectangularPrism r = RectangularPrism(-1.1, 0.01, -1.0, 2.2, 0.5, 0.01, 90, 0, 0);
+    double color[18] = {0.019, 0.047, 0.317,
+                        0.019, 0.047, 0.317,
+                        0.019, 0.047, 0.317,
+                        0.019, 0.047, 0.317,
+                        0.019, 0.047, 0.317,
+                        0.019, 0.047, 0.317};
+
+    RectangularPrism r = RectangularPrism(-1.1, 0.01, -1.0, 2.2, 0.5, 0.01, 90, 0, 0, color);
     r.draw();
-    r = RectangularPrism(-1.1, -0.3, -1.0, 0.3, 0.2, 0.01, 0, 90, 90);
+    r = RectangularPrism(-1.1, -0.3, -1.0, 0.3, 0.2, 0.01, 0, 90, 90, color);
     r.draw();
-    r = RectangularPrism(1.09, -0.3, -1.0, 0.3, 0.2, 0.01, 0, 90, 90);
+    r = RectangularPrism(1.09, -0.3, -1.0, 0.3, 0.2, 0.01, 0, 90, 90, color);
     r.draw();
-    r = RectangularPrism(-1.1, -0.3, -1.0, 2.2, 0.2, 0.01, 90, 0, 0);
+    r = RectangularPrism(-1.1, -0.3, -1.0, 2.2, 0.2, 0.01, 90, 0, 0, color);
     r.draw();
-    r = RectangularPrism(-1.1, -0.3, -1.0, 2.2, 0.3, 0.01, 180, 180, 180);
+    r = RectangularPrism(-1.1, -0.3, -1.0, 2.2, 0.3, 0.01, 180, 180, 180, color);
     r.draw();
     // bottom
     const int num_sections = 100;
 
-    glColor3d(1, 0, 1);
+    glColor3d(0.019, 0.047, 0.317);
     glBegin(GL_TRIANGLE_STRIP);
     glNormal3d(0, 0, -1);
     double angle_step_big = 180.0 / num_sections;
@@ -105,7 +172,7 @@ void FerrisWheelChair::draw_back() {
     const double angle_step = 180.0 / num_sections;
     const double thickness = 1.1;
     
-    glColor3d(1,0,0);
+    glColor3d(0.8, 0.792, 0.4);
     // draw front surface
     glBegin(GL_QUAD_STRIP);
     for(int i = 0; i <= num_sections; i++) {
@@ -117,7 +184,7 @@ void FerrisWheelChair::draw_back() {
     }
     glEnd();
 
-    glColor3d(0,0,1);
+    glColor3d(0.4,0.4,1);
     // draw back surface
     glBegin(GL_QUAD_STRIP);
     for(int i = 0; i <= num_sections; i++) {
@@ -157,7 +224,7 @@ void FerrisWheelChair::draw_back() {
 
     // draw front closure
     glBegin(GL_TRIANGLE_STRIP);
-    glColor3d(1, 0, 1);
+    glColor3d(0, 0, 1);
     glNormal3d(0, -1, 0);
     glVertex3d(1, 0, -0.25);
     glVertex3d(thickness, 0, -0.25);
@@ -168,7 +235,7 @@ void FerrisWheelChair::draw_back() {
     glEnd();
 
     glBegin(GL_QUAD_STRIP);
-    glColor3d(1, 0, 1);
+    glColor3d(0, 0, 1);
     glNormal3d(0, -1, 0);
     glVertex3d(-1, 0, -0.25);
     glVertex3d(-thickness, 0, -0.25);
@@ -181,7 +248,7 @@ void FerrisWheelChair::draw_back() {
     // filler to flatten back
     const double length_offset = 0.7;
     const double angle_offset = 90.0 - ACos(length_offset);
-    glColor3d(1, 0, 0);
+    glColor3d(0.5, 0.5, 1.0);
     double angle_step_small = (180.0 - 2.0 * angle_offset) / num_sections;
     // bottom surface
     glNormal3d(0, 0, -1);
@@ -206,7 +273,6 @@ void FerrisWheelChair::draw_back() {
     }
     glEnd();
     //front surface
-    glColor3d(0.5, 0, 0);
     glNormal3d(0, -1, 0);
     glBegin(GL_TRIANGLE_STRIP);
     glVertex3d(Cos(angle_offset), Sin(angle_offset), -0.25);
@@ -234,7 +300,7 @@ void FerrisWheelChair::draw_seat() {
     glTranslated(0, 0, -0.5);
     glScaled(outer_radius, outer_radius, outer_radius);
     // bottom
-    glColor3d(0, 0, 1);
+    glColor3d(0.4, 0.4, 1);
     glBegin(GL_TRIANGLE_STRIP);
     glNormal3d(0, 0, -1);
     double angle_step_big = 180.0 / num_sections;
@@ -248,7 +314,7 @@ void FerrisWheelChair::draw_seat() {
     glEnd();
 
     // top
-    glColor3d(1, 0, 0);
+    glColor3d(0.4, 0.4, 1);
     glNormal3d(0, 0, 1);
     double angle_step_small = (180.0 - 2.0 * angle_offset) / num_sections;
     glBegin(GL_TRIANGLE_STRIP);
@@ -262,7 +328,7 @@ void FerrisWheelChair::draw_seat() {
     glEnd();
 
     // front
-    glColor3d(1, 0, 1);
+    glColor3d(0.8, 0.792, 0.4);
     glBegin(GL_TRIANGLE_STRIP);
     glVertex3d(1, 0, 0);
     glVertex3d(Cos(angle_offset), +Sin(angle_offset), thickness);
@@ -277,7 +343,7 @@ void FerrisWheelChair::draw_seat() {
     glEnd();
 
     // back
-    glColor3d(0, 1, 1);
+    glColor3d(0.8, 0.792, 0.4);
     glBegin(GL_QUAD_STRIP);
     for (int i = 0; i <= num_sections; i++) {
         glNormal3d(Cos(i * angle_step_small + angle_offset),
@@ -296,6 +362,12 @@ void FerrisWheelChair::draw_seat() {
 
 
 void FerrisWheelChair::draw() {
+    float white[] = {1,1,1,1};
+    float black[] = {0,0,0,1};
+    glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,8);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+
     glPushMatrix();
     glTranslated(cx, cy, cz);
     glScaled(scale, scale, scale);

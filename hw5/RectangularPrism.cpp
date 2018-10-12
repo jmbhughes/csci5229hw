@@ -32,16 +32,22 @@ RectangularPrism::RectangularPrism(double x, double y, double z,
 RectangularPrism::RectangularPrism(double x, double y, double z,
         double sx, double sy, double sz,
         double rx, double ry, double rz,
-        double face_colors[16]):
+        double face_colors[18]):
         x(x), y(y), z(z),
         sx(sx), sy(sy), sz(sz),
         rx(rx), ry(ry), rz(rz) {
-    for(int i = 0; i < 16; ++i) {
-        face_colors[i] = face_colors[i];
+    for(int i = 0; i < 18; i++) {
+        this->face_colors[i] = face_colors[i];
     }
 }
 
 void RectangularPrism::draw() {
+    float white[] = {1,1,1,1};
+    float black[] = {0,0,0,1};
+    glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,8);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+
     glPushMatrix();
     glTranslated(x, y, z);
     glRotated(rx,1,0,0);

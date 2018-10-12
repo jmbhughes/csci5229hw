@@ -29,7 +29,7 @@ private:
     double rz;
 
     // colors of faces: [bottom, front, right, back, left, top]
-    double face_colors[3*6];
+    double face_colors[18];
 public:
     /*
      * Draw a rectangular prism at (x,y,z) with dimensions (sx, sy, sz)
@@ -56,7 +56,7 @@ public:
     RectangularPrism(double x, double y, double z,
             double sx, double sy, double sz,
             double rx, double ry, double rz,
-            double face_colors[3*6]);
+            double face_colors[18]);
 
     // draw the specified rectangular prism
     void draw();

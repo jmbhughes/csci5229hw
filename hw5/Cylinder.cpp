@@ -32,6 +32,12 @@ Cylinder::Cylinder(double cx, double cy, double cz, double radius, double height
 }
 
 void Cylinder::draw() {
+    float yellow[] = {1,1,0,1};
+    float black[] = {0,0,0,1};
+    glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,64);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,yellow);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+
     // adjust so coordinates are at center of cylinder
     const double half_height = height / 2.0;
     glPushMatrix();

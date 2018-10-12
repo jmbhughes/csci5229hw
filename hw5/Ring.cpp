@@ -10,6 +10,12 @@ Ring::Ring(double cx, double cy, double cz, double radius, double thickness):
     cx(cx), cy(cy), cz(cz), radius(radius), thickness(thickness) {}
 
 void Ring::draw() {
+    float yellow[] = {1,1,0,1};
+    float black[] = {0,0,0,1};
+    glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,16);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,yellow);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+
     const int num_sections = 100;
     const double angle_step = 2 * M_PI / num_sections;
 
@@ -20,7 +26,7 @@ void Ring::draw() {
         glBegin(GL_QUAD_STRIP);
 
         // front face
-        glColor3d(0.047, 0.458, 0.494);
+        glColor3d(0.3, 0.49, 0.71);
         glNormal3d(0, 0, -1);
         glVertex3d(radius * cos(angle),
                 radius * sin(angle),

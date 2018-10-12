@@ -21,7 +21,12 @@ Mug::Mug(double cx, double cy, double cz, double height, double radius,
 }
 
 void Mug::draw() {
-    // convert so bottom center of mug is at origin
+    float white[] = {1,1,1,1};
+    float black[] = {0,0,0,1};
+    glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,64);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
+
     glPushMatrix();
     glTranslated(cx, cy, cz);
     glRotated(rx,1,0,0);
