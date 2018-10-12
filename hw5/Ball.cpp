@@ -19,7 +19,7 @@ void Ball::draw(int emission, float shiny) {
     const int inc = 10; // ball increment
     int th,ph;
     float yellow[] = {1.0,1.0,0.0,1.0};
-    float Emission[]  = {0.0,0.0,0.01*emission,1.0};
+    float Emission[]  = {0.0,0.0,(float)0.01*(float)emission,(float)1.0};
     //  Save transformation
     glPushMatrix();
 

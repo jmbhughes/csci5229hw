@@ -26,5 +26,6 @@ To exit, click `escape`.
 - `PgDn/PgUp`:  Zoom in and out 
 - `esc` : closes the program
 
-
+### Timing
+I worked approximately 4 hours 47 minutes on this homework to get lighting right and remake the entire Ferris Wheel into something appealing. 
 
