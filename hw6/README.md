@@ -1,14 +1,12 @@
-# HW5: James Marcus hughes
+# HW6: James Marcus hughes
 
 ## Description
-In this homework, I built upon my three-dimensional scene consisting 
-of a couple mugs, a couple ferris wheels, and a ferris wheel seat. We now have lighting!    
 
 ## Build Instructions
 Use `make` to build.
 
 ## Run Instructions
-Run `hw5` executable with no parameters. 
+Run `hw6` executable with no parameters. 
 
 ### Keybindings
 To interact with the world, rotate your view using the arrow keys. 
@@ -29,5 +27,5 @@ To exit, click `escape`.
 - `esc` : closes the program
 
 ### Timing
-I worked approximately 4 hours 47 minutes on this homework to get lighting right and remake the entire Ferris Wheel into something appealing. 
+
 
