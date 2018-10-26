@@ -1,11 +1,9 @@
-//
-// Created by marcus on 9/25/18.
-//
-
 #include "Cylinder.h"
 #include "Circle.h"
 #include <cmath>
 #include "Definitions.h"
+
+extern unsigned texture[];
 
 Cylinder::Cylinder(double radius, double height) :
     cx(0), cy(0), cz(0), radius(radius), height(height), angle_alt(0.0), angle_az(0.0),
@@ -45,6 +43,7 @@ void Cylinder::draw() {
     glRotated(angle_alt,0,1,0);
     glRotated(angle_az,1,0,0);
 
+
     // draw the bottom circle
     Circle bottom = Circle(0.0, 0.0, -half_height, radius, 0.0, 180.0, bottom_color);
     bottom.draw();
@@ -56,8 +55,11 @@ void Cylinder::draw() {
     glBegin(GL_QUAD_STRIP);
     for (int i = 0; i <= numSections; i++) {
         glNormal3d(radius * cos(i * thetaStep), radius * sin(i * thetaStep), 0);
+        glTexCoord2f((float) i / (float) numSections * 10, 0);
         glVertex3d(radius * cos(i * thetaStep), radius * sin(i * thetaStep), -half_height);
+
         glNormal3d(radius * cos(i * thetaStep), radius * sin(i * thetaStep), 0);
+        glTexCoord2f((float) i / (float) numSections * 10, 1);
         glVertex3d(radius * cos(i * thetaStep), radius * sin(i * thetaStep), half_height);
     }
     glEnd();

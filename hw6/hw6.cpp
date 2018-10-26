@@ -9,6 +9,7 @@
 #include "Cylinder.h"
 #include "RectangularPrism.h"
 #include "FerrisWheel.h"
+#include "TextureLoader.h"
 
 // GLOBALS
 // Viewing
@@ -19,7 +20,7 @@ int fov=55;       //  Field of view (for perspective)
 double asp=1;     //  Aspect ratio
 double dim=5.0;   //  Size of world
 int scene = 0;    // which scene is being shown
-const int SCENE_COUNT = 6; // how many scenes there are
+const int SCENE_COUNT = 4; // how many scenes there are
 const int NUM_MUGS = 25;
 double mugs[NUM_MUGS][8];
 
@@ -50,15 +51,9 @@ int zh        =  90;  // Light azimuth
 float ylight  =   0;  // Elevation of light
 int move      =   1;  // boolean of light movement
 int rotation  =  90;  // ferris wheel rotation
-/*
- *  Print any errors encountered
- *  copied from Schreuder's example 5
- */
-void error_check(const char* where) {
-    int err = glGetError();
-    if (err) fprintf(stderr,"ERROR: %s [%s]\n",gluErrorString(err),where); //TODO: change to iostream
-}
 
+// textures
+unsigned int texture[10]; // texture names
 /*
  *  Convenience routine to output raster text
  *  Use VARARGS to make this more flexible
@@ -113,23 +108,11 @@ void draw_scene1() {
     m.draw();
 }
 
-void draw_scene2() {
-    double base1_color[3] = {0.1,0.1,0.8};
-    double base2_color[3] = {0.8,0.8,0.1};
-    double side_color[3] = {1,0.16,0.40};
-    Cylinder c = Cylinder(0, 0, 0, 1, 3.1, 100, 30, base1_color, base2_color, side_color);
-    c.draw();
-}
-
 void draw_scene3() {
     FerrisWheel f = FerrisWheel(0, 0, 0, 3);
     f.draw(rotation);
 }
 
-void draw_scene4() {
-    Ring r = Ring(0, 0, 0, 1, 2);
-    r.draw();
-}
 
 void draw_scene5() {
     FerrisWheel f = FerrisWheel(0, 0, 0, 3);
@@ -162,7 +145,7 @@ void display() {
     glEnable(GL_DEPTH_TEST);
     // Reset previous transforms
     glLoadIdentity();
-
+    glEnable(GL_TEXTURE_2D);
     // update the current view
      if (mode == 1) { //  Orthogonal - overhead
         glRotatef(ph,1,0,0);
@@ -223,15 +206,9 @@ void display() {
             draw_scene1();
             break;
         case 2:
-            draw_scene2();
-            break;
-        case 3:
             draw_scene3();
             break;
-        case 4:
-            draw_scene4();
-            break;
-        case 5:
+        case 3:
             draw_scene5();
             break;
     }
@@ -445,7 +422,7 @@ int main(int argc, char *argv[]) {
     glutInitWindowSize(900, 900);
 
     // Create the window
-    glutCreateWindow("HW 5: James Marcus Hughes");
+    glutCreateWindow("HW 6: James Marcus Hughes");
 
     // Tell GLUT to call "display" when the scene should be drawn
     glutDisplayFunc(display);
@@ -462,9 +439,22 @@ int main(int argc, char *argv[]) {
     // Tell GLUT  to call "idle" when no interaction
     glutIdleFunc(idle);
 
+    // Load Textures
+    texture[0] = TextureLoader("textures/leather.bmp").get_name();
+    texture[1] = TextureLoader("textures/wood_plank.bmp").get_name();
+    texture[2] = TextureLoader("textures/porcelain.bmp").get_name();
+    texture[3] = TextureLoader("textures/cork.bmp").get_name();
+    texture[4] = TextureLoader("textures/rough_metal.bmp").get_name();
+    texture[5] = TextureLoader("textures/sheet_metal.bmp").get_name();
+    texture[6] = TextureLoader("textures/pattern.bmp").get_name();
+    texture[7] = TextureLoader("textures/concrete.bmp").get_name();
+    texture[8] = TextureLoader("textures/stripes.bmp").get_name();
+    texture[9] = TextureLoader("textures/tie_dye3.bmp").get_name();
+
+
+    glEnable(GL_TEXTURE_2D);
     // Pass control to GLUT so it can interact with the user
     error_check("init");
-
     glutMainLoop();
 
     return 0;

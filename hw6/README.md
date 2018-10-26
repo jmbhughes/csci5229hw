@@ -1,6 +1,10 @@
 # HW6: James Marcus hughes
 
 ## Description
+In this final installment, I add textures to the Ferris Wheel Scene. The ferris wheel chair now has a comfy seat, 
+an aesthetically pleasing wooden base and back, and a metal foot box area (cannot have it getting scuffed!). The ferris
+wheel ring itself is now tie dyed! It has wooden spindles and a metal base. The mug has a cork base, a patterned side, 
+a rough interior, and a stripey accent. 
 
 ## Build Instructions
 Use `make` to build.
@@ -27,5 +31,5 @@ To exit, click `escape`.
 - `esc` : closes the program
 
 ### Timing
-
+I spent 3.5 hours on this assignment. 
 

@@ -2,6 +2,8 @@
 #include "Definitions.h"
 #include <stdexcept>
 
+extern unsigned texture[];
+
 RectangularPrism::RectangularPrism(double x, double y, double z,
         double sx, double sy, double sz):
     x(x), y(y), z(z),
@@ -48,56 +50,83 @@ void RectangularPrism::draw() {
     glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
     glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,black);
 
+    glBindTexture(GL_TEXTURE_2D, texture[5]); // bind sheet metal texture
+
     glPushMatrix();
     glTranslated(x, y, z);
     glRotated(rx,1,0,0);
     glRotated(ry,0,1,0);
     glRotated(rz,0,0,1);
     glScaled(sx, sy, sz);
+    const float tex_scale = 1.5;
     glBegin(GL_QUADS);
     for (int i = 0; i < 6; ++i) {
         glColor3d(face_colors[i*3], face_colors[i*3+1], face_colors[i*3+2]);
         switch(i) {
             case 0: // bottom
                 glNormal3d(0, -1, 0);
+                glTexCoord2f(0, 0);
                 glVertex3d(0, 0, 0);
+                glTexCoord2f(tex_scale, 0);
                 glVertex3d(1, 0, 0);
+                glTexCoord2f(tex_scale, tex_scale);
                 glVertex3d(1, 0, 1);
+                glTexCoord2f(0, tex_scale);
                 glVertex3d(0, 0, 1);
                 break;
             case 1: // front
                 glNormal3d(0, 0, 1);
+                glTexCoord2f(0, 0);
                 glVertex3d(0, 0, 1);
+                glTexCoord2f(0, tex_scale);
                 glVertex3d(0, 1, 1);
+                glTexCoord2f(tex_scale, tex_scale);
                 glVertex3d(1, 1, 1);
+                glTexCoord2f(tex_scale, 0);
                 glVertex3d(1, 0, 1);
                 break;
             case 2: // right side
                 glNormal3d(1, 0, 0);
+                glTexCoord2f(0, 0);
                 glVertex3d(1, 0, 0);
+                glTexCoord2f(tex_scale, 0);
                 glVertex3d(1, 1, 0);
+                glTexCoord2f(tex_scale, tex_scale);
                 glVertex3d(1, 1, 1);
+                glTexCoord2f(0, tex_scale);
                 glVertex3d(1, 0, 1);
                 break;
             case 3: // back side
                 glNormal3d(0, 0, -1);
+                glTexCoord2f(tex_scale, tex_scale);
                 glVertex3d(1, 1, 0);
+                glTexCoord2f(0, tex_scale);
                 glVertex3d(0, 1, 0);
+                glTexCoord2f(0, 0);
                 glVertex3d(0, 0, 0);
+                glTexCoord2f(tex_scale, 0);
                 glVertex3d(1, 0, 0);
                 break;
             case 4: // left side
                 glNormal3d(-1, 0, 0);
+                glTexCoord2f(tex_scale, 0);
                 glVertex3d(0, 1, 0);
+                glTexCoord2f(tex_scale, tex_scale);
                 glVertex3d(0, 1, 1);
+                glTexCoord2f(0, tex_scale);
                 glVertex3d(0, 0, 1);
+                glTexCoord2f(0, 0);
                 glVertex3d(0, 0, 0);
                 break;
             case 5: // top side
                 glNormal3d(0, 1, 0);
+                glTexCoord2f(tex_scale, 0);
                 glVertex3d(1, 1, 0);
+                glTexCoord2f(0, 0);
                 glVertex3d(0, 1, 0);
+                glTexCoord2f(0, tex_scale);
                 glVertex3d(0, 1, 1);
+                glTexCoord2f(tex_scale, tex_scale);
                 glVertex3d(1, 1, 1);
                 break;
             default:

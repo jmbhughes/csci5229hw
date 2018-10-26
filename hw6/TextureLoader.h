@@ -5,6 +5,7 @@
 #include <iostream>
 
 class TextureLoader {
+    // Loads a BMP texture
 private:
     const char*    filename;   // name of where to load string from
     unsigned int   texture;    // Texture name
@@ -16,13 +17,13 @@ private:
     unsigned int   off;        // Image offset
     unsigned int   k;          // Counter
     int            max;        // Maximum texture dimensions
-    void load_file();
-    void read_header();
-    void process_texture();
-    void fatal_error(const char* format, ...);
+    void load_file();          // Open file and throw error if it does not exist
+    void read_header();        // Read the bmp header and throw error if it loads incorrectly
+    void process_texture();    // Process the image putting the texture contents in the appropriate data area
+    void fatal_error(const char* format, ...); // throw a fatal error with a message
 public:
-    TextureLoader(const char* filename);
-    TextureLoader(std::string filename);
-    unsigned int get_name();
+    TextureLoader(const char* filename); // load a texture from a filename string
+    TextureLoader(std::string filename); // load a texture from a filename string
+    unsigned int get_name();  // return the unsigned int that is the texture name
 };
 #endif //HW6_TEXTURELOADER_H

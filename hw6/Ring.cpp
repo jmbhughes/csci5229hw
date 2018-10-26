@@ -6,6 +6,8 @@
 #include "Definitions.h"
 #include <cmath>
 
+extern unsigned texture[];
+
 Ring::Ring(double cx, double cy, double cz, double radius, double thickness):
     cx(cx), cy(cy), cz(cz), radius(radius), thickness(thickness) {}
 
@@ -19,6 +21,7 @@ void Ring::draw() {
     const int num_sections = 100;
     const double angle_step = 2 * M_PI / num_sections;
 
+    glBindTexture(GL_TEXTURE_2D, texture[9]); // bind tie dy texture
     glPushMatrix();
     glTranslated(cx, cy, cz);
     for (int i=0; i <= num_sections; i+=1) {
@@ -28,21 +31,29 @@ void Ring::draw() {
         // front face
         glColor3d(0.3, 0.49, 0.71);
         glNormal3d(0, 0, -1);
+        glTexCoord2f(radius * cos(angle),
+                   radius * sin(angle));
         glVertex3d(radius * cos(angle),
                 radius * sin(angle),
                 0.0);
-        glNormal3d(0, 0, -1);
 
+        glNormal3d(0, 0, -1);
+        glTexCoord2f(radius * cos(angle + angle_step),
+                   radius * sin(angle + angle_step));
         glVertex3d(radius * cos(angle + angle_step),
                 radius * sin(angle + angle_step),
                 0.0);
-        glNormal3d(0, 0, -1);
 
+        glNormal3d(0, 0, -1);
+        glTexCoord2f((radius + thickness) * cos(angle),
+                   (radius + thickness) * sin(angle));
         glVertex3d((radius + thickness) * cos(angle),
                 (radius + thickness) * sin(angle),
                 0.0);
-        glNormal3d(0, 0, -1);
 
+        glNormal3d(0, 0, -1);
+        glTexCoord2f((radius + thickness) * cos(angle + angle_step),
+                   (radius + thickness) * sin(angle + angle_step));
         glVertex3d((radius + thickness) * cos(angle + angle_step),
                 (radius + thickness) * sin(angle + angle_step),
                 0.0);
@@ -51,6 +62,7 @@ void Ring::draw() {
         glNormal3d((radius + thickness) * cos(angle),
                    (radius + thickness) * sin(angle),
                    0);
+        glTexCoord2f((radius + thickness) * cos(angle), 0);
         glVertex3d((radius + thickness) * cos(angle),
                    (radius + thickness) * sin(angle),
                    0.0);
@@ -58,7 +70,7 @@ void Ring::draw() {
         glNormal3d((radius + thickness) * cos(angle + angle_step),
                    (radius + thickness) * sin(angle + angle_step),
                    0);
-
+        glTexCoord2f((radius + thickness) * cos(angle + angle_step), 0);
         glVertex3d((radius + thickness) * cos(angle + angle_step),
                    (radius + thickness) * sin(angle + angle_step),
                    0.0);
@@ -66,13 +78,17 @@ void Ring::draw() {
         glNormal3d((radius + thickness) * cos(angle),
                 (radius + thickness) * sin(angle),
                 0);
+        glTexCoord2f((radius + thickness) * cos(angle), thickness);
         glVertex3d((radius + thickness) * cos(angle),
                 (radius + thickness) * sin(angle),
                 thickness);
+
+
         glNormal3d((radius + thickness) * cos(angle + angle_step),
                 (radius + thickness) * sin(angle + angle_step),
-                   0);
-
+                0);
+        glTexCoord2f((radius + thickness) * cos(angle + angle_step),
+                   thickness);
         glVertex3d((radius + thickness) * cos(angle + angle_step),
                 (radius + thickness) * sin(angle + angle_step),
                 thickness);
@@ -80,20 +96,30 @@ void Ring::draw() {
         // back face
         glNormal3d(0, 0, 1);
 
+        glTexCoord2f((radius + thickness) * cos(angle),
+                   (radius + thickness) * sin(angle));
         glVertex3d((radius + thickness) * cos(angle),
                    (radius + thickness) * sin(angle),
                    thickness);
+
         glNormal3d(0, 0, 1);
+        glTexCoord2f((radius + thickness) * cos(angle + angle_step),
+                   (radius + thickness) * sin(angle + angle_step));
 
         glVertex3d((radius + thickness) * cos(angle + angle_step),
                    (radius + thickness) * sin(angle + angle_step),
                    thickness);
 
         glNormal3d(0, 0, 1);
+        glTexCoord2f(radius * cos(angle),
+                   radius * sin(angle));
         glVertex3d(radius * cos(angle),
                    radius * sin(angle),
                    thickness);
+
         glNormal3d(0, 0, 1);
+        glTexCoord2f(radius * cos(angle + angle_step),
+                   radius * sin(angle + angle_step));
         glVertex3d(radius * cos(angle + angle_step),
                    radius * sin(angle + angle_step),
                    thickness);
@@ -101,12 +127,19 @@ void Ring::draw() {
         // bottom face
         glNormal3d(-radius * cos(angle),
                    -radius * sin(angle),
-                   0);        glVertex3d(radius * cos(angle),
+                   0);
+        glTexCoord2f(radius * cos(angle),
+                   thickness);
+        glVertex3d(radius * cos(angle),
                    radius * sin(angle),
                    thickness);
+
+
         glNormal3d(-radius * cos(angle + angle_step),
                    -radius * sin(angle + angle_step),
                    0.0);
+        glTexCoord2f(radius * cos(angle + angle_step),
+                   thickness);
         glVertex3d(radius * cos(angle + angle_step),
                    radius * sin(angle + angle_step),
                    thickness);
@@ -114,11 +147,17 @@ void Ring::draw() {
         glNormal3d(-radius * cos(angle),
                    -radius * sin(angle),
                    0);
+        glTexCoord2f(radius * cos(angle),
+                   0.0);
         glVertex3d(radius * cos(angle),
                    radius * sin(angle),
                    0.0);
+
+
         glNormal3d(-radius * cos(angle + angle_step),
                    -radius * sin(angle + angle_step),
+                   0.0);
+        glTexCoord2f(radius * cos(angle + angle_step),
                    0.0);
         glVertex3d(radius * cos(angle + angle_step),
                    radius * sin(angle + angle_step),

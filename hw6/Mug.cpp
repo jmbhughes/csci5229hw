@@ -2,6 +2,8 @@
 #include "Definitions.h"
 #include "Cylinder.h"
 
+extern unsigned texture[];
+
 Mug::Mug(double cx, double cy, double cz, double height, double radius,
         double rx, double ry, double rz): cx(cx), cy(cy), cz(cz), height(height),
         radius(radius), rx(rx), ry(ry), rz(rz) {}
@@ -34,23 +36,29 @@ void Mug::draw() {
     glRotated(rz,0,0,1);
     glScaled(radius, radius, height);
 
-   const int num_sections = 100;
+    const int num_sections = 100;
 
+    glBindTexture(GL_TEXTURE_2D, texture[3]); // bind cork texture
     // draw base
-    Cylinder c = Cylinder(0, 0, 0, 1, 0.1, 0, 0, base_color, base_color, side_color);
+    double color[3] = {0.722, 0.529, 0.443};
+    Cylinder c = Cylinder(0, 0, 0, 1, 0.1, 0, 0, color, color, color);
     c.draw();
 
-
     // draw outside
+    glBindTexture(GL_TEXTURE_2D, texture[6]); // bind pattern texture
     glColor3dv(side_color);
+    glColor3d(1, 1, 1);
     glBegin(GL_QUAD_STRIP);
     for (int i = 0; i <= num_sections; i++) {
+        glTexCoord2f(i/20., 0);
         glNormal3d(cos((i+0.0)/num_sections * 2 * M_PI),
                    sin((i+0.0)/num_sections * 2 * M_PI),
                    0);
         glVertex3d(cos((i+0.0)/num_sections * 2 * M_PI),
                    sin((i+0.0)/num_sections * 2 * M_PI),
                    0);
+
+        glTexCoord2f(i/20., 3);
         glNormal3d(cos((i+0.0)/num_sections * 2 * M_PI),
                    sin((i+0.0)/num_sections * 2 * M_PI),
                    1.0);
@@ -62,14 +70,18 @@ void Mug::draw() {
 
     // draw inside
     glColor3dv(inside_color);
+    glColor3d(1, 1, 1);
+    glBindTexture(GL_TEXTURE_2D, texture[7]); // bind concrete texture
     glBegin(GL_QUAD_STRIP);
     for (int i = 0; i <= num_sections; i++) {
         glNormal3d(-0.9*cos((i+0.0)/num_sections * 2 * M_PI),
                    -0.9*sin((i+0.0)/num_sections * 2 * M_PI),
                    0);
+        glTexCoord2f(i/20., 0);
         glVertex3d(0.9*cos((i+0.0)/num_sections * 2 * M_PI),
                    0.9*sin((i+0.0)/num_sections * 2 * M_PI),
                    0);
+        glTexCoord2f(i/20., 1.);
         glNormal3d(-0.9*cos((i+0.0)/num_sections * 2 * M_PI),
                    -0.9*sin((i+0.0)/num_sections * 2 * M_PI),
                    -1.0);
@@ -81,12 +93,16 @@ void Mug::draw() {
 
     // draw top
     glColor3dv(top_color);
+    glBindTexture(GL_TEXTURE_2D, texture[8]); // bind concrete texture
+
     glBegin(GL_QUAD_STRIP);
     for (int i = 0; i <= num_sections; i++) {
         glNormal3d(0, 0, 1);
+        glTexCoord2f(i/30., 0);
         glVertex3d(cos((i+0.0)/num_sections * 2 * M_PI),
                    sin((i+0.0)/num_sections * 2 * M_PI),
                    1.0);
+        glTexCoord2f(i/30., 0.5);
         glNormal3d(0, 1, 0);
         glVertex3d(0.9*cos((i+0.0)/num_sections * 2 * M_PI),
                    0.9*sin((i+0.0)/num_sections * 2 * M_PI),
@@ -99,10 +115,12 @@ void Mug::draw() {
     glBegin(GL_QUAD_STRIP);
     for (int i = 0; i <= num_sections; i++) {
         glNormal3d(-1, 0, 0);
+        glTexCoord2f(i/50., 0);
         glVertex3d(0.0,
                    0.5*sin((i+0.0)/num_sections * M_PI) + 1,
                    0.5*cos((i+0.0)/num_sections * M_PI) + 0.5);
         glNormal3d(-1, 0, 0);
+        glTexCoord2f(i/50., 0.25);
         glVertex3d(0.0,
                    0.5*0.9*sin((i+0.0)/num_sections * M_PI) + 1,
                    0.5*0.9*cos((i+0.0)/num_sections * M_PI) + 0.5);
@@ -112,10 +130,12 @@ void Mug::draw() {
     glBegin(GL_QUAD_STRIP);
     for (int i = 0; i <= num_sections; i++) {
         glNormal3d(1, 0, 0);
+        glTexCoord2f(i/50., 0);
         glVertex3d(0.1,
                    0.5*sin((i+0.0)/num_sections * M_PI) + 1,
                    0.5*cos((i+0.0)/num_sections * M_PI) + 0.5);
         glNormal3d(1, 0, 0);
+        glTexCoord2f(i/50., 0.25);
         glVertex3d(0.1,
                    0.5*0.9*sin((i+0.0)/num_sections * M_PI) + 1,
                    0.5*0.9*cos((i+0.0)/num_sections * M_PI) + 0.5);
@@ -124,12 +144,14 @@ void Mug::draw() {
 
     glBegin(GL_QUAD_STRIP);
     for (int i = 0; i <= num_sections; i++) {
+        glTexCoord2f(i/50., 0);
         glNormal3d(0,
                    0.5*sin((i+0.0)/num_sections * M_PI),
                    0.5*cos((i+0.0)/num_sections * M_PI));
         glVertex3d(0.1,
                    0.5*sin((i+0.0)/num_sections * M_PI) + 1,
                    0.5*cos((i+0.0)/num_sections * M_PI) + 0.5);
+        glTexCoord2f(i/50., 0.25);
         glNormal3d(0.0,
                    0.5*sin((i+0.0)/num_sections * M_PI),
                    0.5*cos((i+0.0)/num_sections * M_PI));
@@ -141,12 +163,14 @@ void Mug::draw() {
 
     glBegin(GL_QUAD_STRIP);
     for (int i = 0; i <= num_sections; i++) {
+        glTexCoord2f(i/50., 0);
         glNormal3d(0,
                    -0.5*0.9*sin((i+0.0)/num_sections * M_PI),
                    -0.5*0.9*cos((i+0.0)/num_sections * M_PI));
         glVertex3d(0.1,
                    0.5*0.9*sin((i+0.0)/num_sections * M_PI) + 1,
                    0.5*0.9*cos((i+0.0)/num_sections * M_PI) + 0.5);
+        glTexCoord2f(i/50., 0);
         glNormal3d(0.0,
                    -0.5*0.9*sin((i+0.0)/num_sections * M_PI),
                    -0.5*0.9*cos((i+0.0)/num_sections * M_PI));

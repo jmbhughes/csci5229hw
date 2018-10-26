@@ -7,6 +7,9 @@
 #include "Definitions.h"
 #include <iostream>
 
+extern unsigned texture[];
+
+
 Circle::Circle(double radius):
     cx(0.0), cy(0.0), cz(0.0), radius(radius), angle_alt(0.0), angle_az(0.0), color{0.0, 0.0, 1.0} {}
 
@@ -42,10 +45,14 @@ void Circle::draw() {
     glNormal3d(0, 0, 1);
     glVertex2f(0,0);
 
+    glBindTexture(GL_TEXTURE_2D, texture[3]); // bind cork texture
+
+
     // establish circle perimeter points
     for (int section = 0; section <= num_sections; ++section) {
         glColor3d(color[0], color[1], color[2]);
         glNormal3d(0, 0, 1);
+        glTexCoord2f(radius * cos(section * angle_step), radius * sin(section * angle_step));
         glVertex2d(radius * cos(section * angle_step), radius * sin(section * angle_step));
     }
     glEnd();
