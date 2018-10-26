@@ -1,5 +1,8 @@
 # CSCI 5229 homework
 
+This is the graduate level introduction to computer graphics course at the University of Colorado Boulder. A few small assignments were completed
+to familiarize students with OpenGL. 
+
 + [hw0](hw0) was a "get to know me" exercise
 + [hw1](hw1) includes exploration of the gears animation
 + [hw2](hw2) is a Lorenz attractor
